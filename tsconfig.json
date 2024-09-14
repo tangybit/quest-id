@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+      "module": "ESNext",
+      "target": "ES6",
+      "baseUrl": "./src",
+      "strictNullChecks": true,
+      "allowJs": true,
+      "paths": {
+        "@utils/*": ["utils/*"]
+      },
+      "jsx": "react-jsx",
+      "esModuleInterop": true,
+      "allowSyntheticDefaultImports": true
+    },
+    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.astro"],
+    "exclude": ["node_modules"]
+  }
+  
+  

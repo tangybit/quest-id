@@ -1,0 +1,406 @@
+---
+---
+
+<div id="slider-container">
+  <div id="fish-container"></div>
+  <button id="nextBtn" class="slider-arrow">→</button>
+</div>
+
+<!-- Buttons container -->
+<div id="button-container" style="text-align: center; margin-top: 20px;">
+  <button id="skipBtn" class="action-btn" style="display: none;">Skip</button>
+  <button id="revealBtn" class="action-btn" style="display: none;">Reveal Answer</button>
+  <button id="retryBtn" class="action-btn" style="display: none;">Retry</button> <!-- Add Retry button here -->
+</div>
+
+
+<!-- Input field for scientific name guessing -->
+<div id="input-container">
+  <span id="error-mark" style="visibility: hidden;">❌</span>
+  <input type="text" id="scientific-name-input" placeholder="Type scientific name" autocomplete="off" />
+  <button id="checkBtn">Check</button>
+</div>
+
+<script>
+  let score = 0;
+  let scoreData = [];
+  let retryUsed = false;
+  document.addEventListener('DOMContentLoaded', function() {
+    const csvFilePath = '/data/fishes.csv';
+    let currentIndex = 0;
+    let fishData = [];
+
+    // Function to shuffle an array
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function fetchAndParseCSV() {
+  fetch(csvFilePath)
+    .then(response => response.text())
+    .then(data => {
+      const rows = data.split('\n').map(row => row.split(','));
+      const headers = rows[0];
+      fishData = rows.slice(1).map(row => {
+        return headers.reduce((obj, header, index) => {
+          obj[header.trim()] = row[index]?.trim();
+          return obj;
+        }, {});
+      });
+
+      // Shuffle fish data
+      shuffleArray(fishData);
+
+      // Log the length of the fishData array
+      console.log('Total number of fishes in CSV:', fishData.length);
+
+      // Display first fish
+      displayFish(fishData[currentIndex]);
+    })
+    .catch(error => console.error('Error fetching CSV:', error));
+}
+
+  
+    function displayFish(fish) {
+      const container = document.getElementById('fish-container');
+      container.innerHTML = '';  // Clear existing content
+
+      const imgSrc = `/fishes/${fish.index}-${fish['scientific name'].replace(/\s+/g, '').replace('.', '')}.png`;
+      const imgAlt = fish['common name'];
+
+      const fishElement = document.createElement('div');
+      fishElement.classList.add('fish');
+
+      // Initially hide the scientific name and common name
+      fishElement.innerHTML = `
+        <img src="${imgSrc}" alt="${imgAlt}" class="fish-image" />
+        <div class="fish-info" style="display: none;">
+          <h2 id="scientific-name">${fish['scientific name']}</h2>
+          <p id="common-name">${fish['common name']}</p>
+        </div>
+      `;
+
+      container.appendChild(fishElement);
+
+      // Reset input field, check button, skip button, reveal button, and retry button
+      const inputField = document.getElementById('scientific-name-input');
+      const checkBtn = document.getElementById('checkBtn');
+      const skipBtn = document.getElementById('skipBtn');
+      const revealBtn = document.getElementById('revealBtn');
+      const retryBtn = document.getElementById('retryBtn');
+
+      inputField.disabled = false;
+      inputField.style.backgroundColor = '';
+      inputField.value = '';
+      checkBtn.disabled = false;
+      checkBtn.style.backgroundColor = '';
+
+      // Reset and enable the skip, reveal, and retry buttons
+      skipBtn.style.display = 'none';
+      skipBtn.disabled = true;
+      revealBtn.style.display = 'none';
+      revealBtn.disabled = true;
+      retryBtn.style.display = 'none';
+      retryBtn.disabled = true;
+
+      // Reset the retry flag for each new fish
+      retryUsed = false;
+
+      // Disable the "Next" button initially
+      document.getElementById('nextBtn').disabled = true;
+
+
+      // Hide the error mark
+      document.getElementById('error-mark').style.visibility = 'hidden';
+    }
+    function checkScientificName() {
+  const inputField = document.getElementById('scientific-name-input');
+  const input = inputField.value.trim();
+  const currentFish = fishData[currentIndex];
+  const scientificNameElement = document.getElementById('scientific-name');
+  const fishInfoElement = document.querySelector('.fish-info');
+  const correctName = currentFish['scientific name'];
+  const retryBtn = document.getElementById('retryBtn');
+  const skipBtn = document.getElementById('skipBtn');
+  const revealBtn = document.getElementById('revealBtn');
+  const checkBtn = document.getElementById('checkBtn');
+
+  // Log the current fish being checked
+  console.log(`Checking answer for fish: ${currentFish['scientific name']}`);
+
+  // Check for blank input
+  if (input === '') {
+    inputField.style.border = '2px solid red';
+    document.getElementById('error-mark').style.visibility = 'visible';
+    console.log('Blank input is not allowed');
+    return;
+  }
+
+  inputField.style.border = ''; // Remove red border if not blank
+
+  // Check if this fish was already processed (retry scenario)
+  const existingEntry = scoreData.find(entry => entry.fish === currentFish['scientific name']);
+  if (existingEntry) {
+    console.log('This fish has already been recorded:', existingEntry);
+
+    // Handle retry logic
+    if (input === correctName) {
+      // Correct Answer Logic for Retry
+      fishInfoElement.style.display = 'block';
+      scientificNameElement.innerHTML = `${currentFish['scientific name']} ✔️`;
+      scientificNameElement.style.color = 'green';
+      document.getElementById('error-mark').style.visibility = 'hidden';
+
+      inputField.disabled = true;
+      inputField.style.backgroundColor = 'lightgray';
+      checkBtn.disabled = true;
+      checkBtn.style.backgroundColor = 'lightgray';
+
+      // Enable the "Next" button
+      document.getElementById('nextBtn').disabled = false;
+
+      // Hide action buttons
+      retryBtn.style.display = 'none';
+      skipBtn.style.display = 'none';
+      revealBtn.style.display = 'none';
+
+      // Update the entry to mark it as "corrected" only if it was wrong initially
+      if (existingEntry.status === 'wrong') {
+        existingEntry.corrected = true;
+        console.log('Retry Correct: Entry updated in scoreData', existingEntry);
+      }
+    } else {
+      // Incorrect Answer Logic for Retry
+      inputField.disabled = true;
+      inputField.style.backgroundColor = 'lightgray';
+      checkBtn.disabled = true;
+      checkBtn.style.backgroundColor = 'lightgray';
+
+      // Show the incorrect answer in the input field
+      inputField.value = input;
+      document.getElementById('error-mark').style.visibility = 'visible';
+      inputField.style.border = '2px solid red';
+
+      // Always show "Skip" and "Reveal" buttons
+      skipBtn.style.display = 'inline-block';
+      skipBtn.disabled = false;
+      revealBtn.style.display = 'inline-block';
+      revealBtn.disabled = false;
+
+      console.log('Retry Incorrect: No changes to entry in scoreData');
+    }
+
+    // Log the entire scoreData array after retry processing
+    console.log('Score Data after retry processing:', scoreData);
+    console.log('Number of entries in scoreData:', scoreData.length);
+    return; // Exit the function since no new entries need to be added to scoreData
+  }
+
+  // Handle the first attempt (correct or wrong)
+  if (input === correctName) {
+    // Correct Answer Logic
+    fishInfoElement.style.display = 'block';
+    scientificNameElement.innerHTML = `${currentFish['scientific name']} ✔️`;
+    scientificNameElement.style.color = 'green';
+    document.getElementById('error-mark').style.visibility = 'hidden';
+
+    inputField.disabled = true;
+    inputField.style.backgroundColor = 'lightgray';
+    checkBtn.disabled = true;
+    checkBtn.style.backgroundColor = 'lightgray';
+
+    // Enable the "Next" button
+    document.getElementById('nextBtn').disabled = false;
+
+    // Hide action buttons
+    retryBtn.style.display = 'none';
+    skipBtn.style.display = 'none';
+    revealBtn.style.display = 'none';
+
+    // Add the correct answer to scoreData
+    score += 1;
+    scoreData.push({ fish: currentFish['scientific name'], status: 'correct', corrected: false });
+
+    console.log('First Attempt Correct: Added to scoreData', { fish: currentFish['scientific name'], status: 'correct', corrected: false });
+  } else {
+    // Incorrect Answer Logic
+
+    // Disable the input field and check button
+    inputField.disabled = true;
+    inputField.style.backgroundColor = 'lightgray';
+    checkBtn.disabled = true;
+    checkBtn.style.backgroundColor = 'lightgray';
+
+    // Show the incorrect answer in the input field
+    inputField.value = input;
+    document.getElementById('error-mark').style.visibility = 'visible';
+    inputField.style.border = '2px solid red';
+
+    // Always show "Skip" and "Reveal" buttons
+    skipBtn.style.display = 'inline-block';
+    skipBtn.disabled = false;
+    revealBtn.style.display = 'inline-block';
+    revealBtn.disabled = false;
+
+    // Show the "Retry" button if it hasn't been used
+    if (!retryUsed) {
+      retryBtn.style.display = 'inline-block';
+      retryBtn.disabled = false;
+    }
+
+    // Add the incorrect answer to scoreData
+    scoreData.push({ fish: currentFish['scientific name'], status: 'wrong', corrected: false });
+
+    console.log('First Attempt Incorrect: Added to scoreData', { fish: currentFish['scientific name'], status: 'wrong', corrected: false });
+  }
+
+  // Log score and details to console
+  console.log('Current Score:', score);
+  console.log('Score Details:', scoreData);
+}
+
+ function showNextFish() {
+      if (currentIndex < fishData.length - 1) {
+        currentIndex++;
+        displayFish(fishData[currentIndex]);
+      } else {
+        // All fishes have been processed, show final message
+        displayFinalMessage();
+      }
+    }
+
+    function displayFinalMessage() {
+  const container = document.getElementById('fish-container');
+  container.innerHTML = ''; // Clear existing content
+
+  // Simulate a 100-question test by repeating scoreData 10 times
+  const repeatedScoreData = [];
+  for (let i = 0; i < 10; i++) {
+    repeatedScoreData.push(...scoreData);
+  }
+
+  // Calculate the total score based on the repeated data
+  const totalFishCount = repeatedScoreData.length;
+  const correctCount = repeatedScoreData.filter(entry => entry.status === 'correct').length;
+  const score = (correctCount / totalFishCount) * 100; // Calculate the percentage score
+
+  // Create the final message container
+  const finalMessageElement = document.createElement('div');
+  finalMessageElement.classList.add('final-message-container');
+  finalMessageElement.innerHTML = `
+    <h1>Congrats, you're done!</h1>
+    <h2>Your Score: ${correctCount} / ${totalFishCount} (${score.toFixed(2)}%)</h2>
+  `;
+
+  // Create a scrollable container for the table
+  const scrollableContainer = document.createElement('div');
+  scrollableContainer.classList.add('scrollable-container');
+
+  // Create a table to display fish data
+  const table = document.createElement('table');
+  table.classList.add('score-table');
+
+  // Populate the table with repeated score data
+  const tableBody = document.createElement('tbody');
+  repeatedScoreData.forEach((entry, index) => {
+    const row = document.createElement('tr');
+    const statusSymbol = entry.status === 'correct' ? '✔️' : '❌';
+    const statusColor = entry.status === 'correct' ? 'green' : 'red';
+    
+    row.innerHTML = `
+      <td>${entry.fish} ${index + 1}</td>
+      <td style="color: ${statusColor}; text-align: center;">${statusSymbol}</td>
+    `;
+    tableBody.appendChild(row);
+  });
+
+  // Append the table body to the table
+  table.appendChild(tableBody);
+
+  // Append the table to the scrollable container
+  scrollableContainer.appendChild(table);
+
+  // Append the scrollable container to the final message container
+  finalMessageElement.appendChild(scrollableContainer);
+
+  // Append the final message container to the main container
+  container.appendChild(finalMessageElement);
+
+  // Optionally hide other buttons if needed
+  document.getElementById('button-container').style.display = 'none';
+  document.getElementById('input-container').style.display = 'none';
+}
+
+
+     // Retry button logic
+     document.getElementById('retryBtn').addEventListener('click', function() {
+      const inputField = document.getElementById('scientific-name-input');
+      const checkBtn = document.getElementById('checkBtn');
+
+      // Re-enable the input field and check button
+      inputField.disabled = false;
+      inputField.style.backgroundColor = '';
+      checkBtn.disabled = false;
+      checkBtn.style.backgroundColor = '';
+
+      // Clear the input field and error mark
+      inputField.value = '';
+      document.getElementById('error-mark').style.visibility = 'hidden';
+      inputField.style.border = ''; // Reset border style
+
+      // Hide the "Retry" button after it's used
+      retryBtn.style.display = 'none';
+      retryBtn.disabled = true;
+
+      // Set the retry flag to true
+      retryUsed = true;
+    });
+
+    // Reveal button logic
+document.getElementById('revealBtn').addEventListener('click', function() {
+  const currentFish = fishData[currentIndex];
+  const scientificNameElement = document.getElementById('scientific-name');
+  const fishInfoElement = document.querySelector('.fish-info');
+
+  // Reveal the scientific and common name
+  fishInfoElement.style.display = 'block';
+  scientificNameElement.innerHTML = `${currentFish['scientific name']} (Revealed)`;
+  scientificNameElement.style.color = "blue";  // Highlight as revealed
+
+  // Disable input field and check button
+  const inputField = document.getElementById('scientific-name-input');
+  const checkBtn = document.getElementById('checkBtn');
+  inputField.disabled = true;
+  inputField.style.backgroundColor = 'lightgray';
+  checkBtn.disabled = true;
+  checkBtn.style.backgroundColor = 'lightgray';
+
+  // Enable the "Next" button
+  document.getElementById('nextBtn').disabled = false;
+
+  // Hide and disable the "Skip" and "Reveal" buttons
+  document.getElementById('skipBtn').style.display = 'none';
+  document.getElementById('skipBtn').disabled = true;
+  document.getElementById('revealBtn').style.display = 'none';
+  document.getElementById('revealBtn').disabled = true;
+  document.getElementById('retryBtn').style.display = 'none';
+  document.getElementById('retryBtn').disabled = true;
+});
+
+    document.getElementById('skipBtn').addEventListener('click', function() {
+      document.getElementById('nextBtn').disabled = false;
+      showNextFish();
+    });
+
+    
+
+    // Event listeners for Next, Previous, and Check buttons
+    document.getElementById('nextBtn').addEventListener('click', showNextFish);
+    document.getElementById('checkBtn').addEventListener('click', checkScientificName);
+
+    fetchAndParseCSV();
+  });
+</script>

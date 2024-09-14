@@ -1,0 +1,31 @@
+---
+import '../styles/global.css';
+// import Nav from './Nav.astro';
+import Fish from './Fish.astro';
+---
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUEST ID Study App</title>
+  </head>
+  <body>
+    <!-- <Nav /> -->
+    <video autoplay muted loop id="background-video">
+      <source src="/video/background.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+
+    <!-- Render the fish content inside the TestContainer -->
+    <div class="test-container">
+      <div class="test-content">
+        <Fish /> <!-- Display the Fish component inside the container -->
+      </div>
+    </div>
+
+    <!-- Floating Logo in Upper Right Corner -->
+    <div class="logo-container">
+      <img src="/mop-logo.png" alt="Logo" class="logo" />
+    </div>
+  </body>
+</html>

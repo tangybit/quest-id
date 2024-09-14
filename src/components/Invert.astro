@@ -1,0 +1,59 @@
+// Function to check if the input matches the scientific name (ignoring spaces and case-sensitive)
+function checkScientificName() {
+  const inputField = document.getElementById('scientific-name-input');
+  const checkBtn = document.getElementById('checkBtn');
+  const input = inputField.value.trim().replace(/\s+/g, '');  // Declare 'input' only once
+  const currentFish = fishData[currentIndex];
+  const scientificNameElement = document.getElementById('scientific-name');
+  const fishInfoElement = document.querySelector('.fish-info');
+  const correctName = currentFish['scientific name'].replace(/\s+/g, '');
+
+  // Check for blank input
+  if (input === '') {
+    inputField.style.border = '2px solid red';  // Add red border
+    document.getElementById('error-mark').style.visibility = 'visible'; // Show red X
+    console.log('Blank input is not allowed');
+    return;  // Stop execution if input is blank
+  }
+
+  // If not blank, reset the border
+  inputField.style.border = '';  // Remove red border if not blank
+
+  // Track whether the input is correct or incorrect
+  let result = { name: currentFish['scientific name'], correct: false };  // Prepare the result object
+
+  if (input === correctName) {
+    // Mark the answer as correct in the result
+    result.correct = true;
+
+    // Show the scientific name and common name once the input matches
+    fishInfoElement.style.display = "block";
+    scientificNameElement.innerHTML = `${currentFish['scientific name']} ✔️`;
+    scientificNameElement.style.color = "green";  // Change color to green for correct answer
+    document.getElementById('error-mark').style.visibility = "hidden"; // Hide red X
+
+    // Freeze the input field and check button, gray them out
+    inputField.disabled = true;
+    inputField.style.backgroundColor = 'lightgray';  // Gray out input field
+    checkBtn.disabled = true;
+    checkBtn.style.backgroundColor = 'lightgray';    // Gray out check button
+
+    console.log(`Correct answer: ${currentFish['scientific name']}`);
+  } else {
+    // Mark the answer as incorrect in the result
+    result.correct = false;
+
+    // Keep the names hidden and show red "X" for incorrect input
+    scientificNameElement.innerHTML = `${currentFish['scientific name']}`;
+    scientificNameElement.style.color = "red";  // Keep name red when incorrect
+    document.getElementById('error-mark').style.visibility = "visible"; // Show red X
+
+    console.log(`Incorrect answer: ${currentFish['scientific name']}`);
+  }
+
+  // Add the result to the scoreData array
+  scoreData.push(result);
+
+  // Log the scoreData array to confirm it's being updated
+  console.log('Updated scoreData:', scoreData);
+}

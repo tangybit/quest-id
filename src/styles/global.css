@@ -1,0 +1,265 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevent scrolling */
+}
+
+#background-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
+.logo-container {
+  position: fixed;
+  top: 50px; 
+  right: 80px; 
+  z-index: 10; 
+}
+
+.logo {
+  width: 100px;
+  height: auto;
+}
+
+.test-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(173, 216, 230, 0.7); /* Light blue with translucency */
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 600px; /* Increased width */
+  height: 600px; /* Increased height */
+  text-align: center;
+}
+
+.test-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%; /* Ensure content is centered */
+}
+
+/* Main container for the slider */
+#slider-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  position: relative;
+}
+
+/* Fish image styling */
+.fish-image {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px; /* Adds space between the image and text */
+}
+
+/* Slider arrow styling */
+.slider-arrow {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: fixed; /* Fixed position to ensure arrows stay in place */
+  top: 50%;
+  transform: translateY(-50%); /* Center arrows vertically */
+  transition: background-color 0.3s;
+}
+
+.slider-arrow:hover {
+  background-color: #45a049;
+}
+
+/* Fixed arrow positions on the left and right */
+#prevBtn {
+  left: 20px; /* Fixed position to the left */
+}
+
+#nextBtn {
+  right: 20px; /* Fixed position to the right */
+}
+
+/* Styling for the text beneath the image */
+.fish-info {
+  text-align: center;
+}
+
+.fish-info h2 {
+  font-size: 1.5rem;
+  font-style: italic;
+  margin-bottom: 5px;
+}
+
+.fish-info p {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+
+/* Responsive design */
+@media (max-width: 768px) {
+  #slider-container {
+    max-width: 100%;
+    padding: 10px;
+  }
+
+  .fish-image {
+    max-width: 80%;
+  }
+
+  .slider-arrow {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .slider-arrow {
+    width: 35px;
+    height: 35px;
+    font-size: 18px;
+  }
+}
+
+#input-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+#scientific-name-input {
+  padding: 10px;
+  font-size: 16px;
+  width: 300px;
+  margin-right: 10px;
+}
+
+#checkBtn {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+#checkBtn:hover {
+  background-color: #45a049;
+}
+
+#scientific-name {
+  transition: color 0.3s ease;
+}
+
+#input-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+#scientific-name-input {
+  padding: 10px;
+  font-size: 16px;
+  width: 300px;
+  margin-left: 10px;
+}
+
+#error-mark {
+  font-size: 24px;
+  color: red;
+}
+
+#checkBtn {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  margin-left: 10px;
+}
+
+#checkBtn:hover {
+  background-color: #45a049;
+}
+
+/* Adjusting the container for centering */
+#skip-button-container {
+  text-align: center;
+  margin-bottom: 10px; /* Adds some space between the skip button and the input field */
+}
+
+.action-btn {
+  padding: 10px 20px;
+  background-color: #007bff; /* Blue color for the button */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.action-btn:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+.action-btn:disabled {
+  background-color: #cccccc; /* Gray out the button when disabled */
+  cursor: not-allowed;
+}
+
+.scrollable-container {
+  max-height: 400px; /* Adjust this height to fit your layout */
+  overflow-y: auto;
+  margin-top: 20px;
+  border: 1px solid #ddd; /* Optional: border for visual separation */
+  padding: 10px; /* Optional: padding for a cleaner look */
+}
+
+.score-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.score-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.score-table td:first-child {
+  text-align: left; /* Align fish names to the left */
+}
+
+
+
