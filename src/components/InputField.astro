@@ -1,0 +1,13 @@
+---
+const { inputId, placeholder = '' } = Astro.props;
+---
+
+<div>
+  <input 
+    type="text" 
+    id={inputId} 
+    placeholder={placeholder} 
+    autocomplete="off"
+    class="custom-input"
+  />
+</div>

@@ -1,20 +1,23 @@
 ---
 const links = [
-  { id: 'section1', label: 'Section 1' },
-  { id: 'section2', label: 'Section 2' },
-  { id: 'section3', label: 'Section 3' },
-  { id: 'section4', label: 'Section 4' }
+  { id: 'fish', label: 'Fishes', path: '/fish' },
+  { id: 'invert', label: 'Invertebrates', path: '/invert' },
+  { id: 'limu', label: 'Limu', path: '/limu' },
+  { id: 'all', label: 'All Species' },
+  { id: 'random-100', label: 'Randomized 100' }
 ];
 ---
 <nav class="floating-tabs">
   <ul>
     {links.map(link => (
       <li key={link.id}>
-        <a href={`#${link.id}`}>{link.label}</a>
+        <!-- Add a 'data-section' attribute to identify the section in JS -->
+        <a href="#" data-section={link.id} onClick={(e) => handleNavClick(e, link.id)} class={Astro.props.activeSection === link.id ? 'active' : ''}>{link.label}</a>
       </li>
     ))}
   </ul>
 </nav>
+
 
 <style>
   /* Floating Tabs on the Left */
@@ -57,4 +60,3 @@ const links = [
     color: white;
   }
 </style>
-

@@ -1,0 +1,15 @@
+---
+const { id, text, onClick, display = 'inline-block', disabled = false, className = '' } = Astro.props;
+---
+
+<button
+  id={id}
+  class={`btn ${className}`}  // Default class 'btn' added
+  style={`display: ${display};`}
+  disabled={disabled}
+  onClick={() => {
+    console.log('Button clicked:', id); // Debug: Log when button is clicked
+    if (onClick) onClick();
+  }}>
+  {text}
+</button>

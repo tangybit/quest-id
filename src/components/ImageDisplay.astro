@@ -1,0 +1,115 @@
+---
+import { Image } from 'astro:assets';
+const { imagePaths } = Astro.props;
+---
+
+<div class="gallery-container">
+  <div class="gallery">
+    {imagePaths.map((path, idx) => (
+      <Image 
+        src={path} 
+        alt={`Image ${idx + 1}`} 
+        class="gallery-image" 
+        loading="lazy" 
+        format="auto" 
+        width={500} 
+        height={350} 
+      />
+    ))}
+  </div>
+
+  {imagePaths.length > 1 && (
+    <div class="dots">
+      {imagePaths.map((_, idx) => (
+        <span class="dot" data-index={idx}></span>
+      ))}
+    </div>
+  )}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Select all gallery containers on the page
+    const galleryContainers = document.querySelectorAll('.gallery-container');
+    
+    galleryContainers.forEach(galleryContainer => {
+        const gallery = galleryContainer.querySelector('.gallery');
+        const dots = galleryContainer.querySelectorAll('.dot');
+        const imageCount = dots.length;
+
+        if (gallery) {
+            // Add scroll event listener to each gallery
+            gallery.addEventListener('scroll', () => {
+                const scrollWidth = gallery.scrollWidth - gallery.clientWidth;
+                const scrollPosition = gallery.scrollLeft;
+                const scrollIndex = Math.round((scrollPosition / scrollWidth) * (imageCount - 1));
+                
+                // Update dots based on the current scroll position
+                dots.forEach((dot, idx) => {
+                    dot.classList.toggle('active', idx === scrollIndex);
+                });
+            });
+
+            // Set the first dot as active initially
+            if (dots.length > 0) dots[0].classList.add('active');
+        }
+    });
+});
+</script>
+
+<style>
+.gallery-container {
+    position: relative;
+    height: 55vh; /* Adjusted the height to make the viewport smaller */
+    overflow: hidden;
+    padding-bottom: 0px;
+}
+
+.gallery {
+    display: flex;
+    overflow-x: scroll;
+    scroll-behavior: smooth;
+    cursor: grab;
+    width: 100%;
+    height: calc(100% - 30px); /* Adjusted to match the new container height */
+    gap: 10px; /* Adjust the gap between images */
+    padding: 0 10px; /* Optional: Add padding to the edges of the gallery */
+}
+
+.gallery-image {
+    flex: 0 0 100%; /* Reduced to 95% to leave some space between images */
+    height: 100%; /* Makes sure the image fills the height of the gallery */
+    object-fit: contain;
+    object-position: center;
+    user-select: none;
+}
+
+
+
+.dots {
+    display: flex;
+    justify-content: center;
+    padding-top: 10px;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+}
+
+.dot {
+    height: 10px;
+    width: 10px;
+    margin: 0 5px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer;
+}
+
+.dot.active {
+    background-color: #45a049;
+    transform: scale(1.5);
+}
+</style>

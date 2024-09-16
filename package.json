@@ -1,6 +1,7 @@
 {
   "name": "your-project-name",
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
     "build": "astro build",
     "dev": "astro dev",
@@ -8,10 +9,14 @@
   },
   "dependencies": {
     "@astrojs/alpinejs": "^0.4.0",
+    "@astrojs/react": "^3.6.2",
     "@astrojs/tailwind": "^5.1.0",
     "alpinejs": "^3.14.1",
     "astro": "^4.14.5",
+    "astro-carousel": "^2.0.8",
     "papaparse": "^5.4.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "tailwind": "^4.0.0"
   },
   "devDependencies": {

@@ -1,0 +1,98 @@
+---
+import InputField from './InputField.astro';
+import Button from './Button.astro';
+
+const { index, slidePosition, dataGroupedByIndex } = Astro.props;
+const itemList = dataGroupedByIndex[index];
+const itemData = itemList ? itemList[0] : null;
+---
+
+{itemData ? (
+    <div class="data-info" data-index={index} data-slide-position={slidePosition}>
+      <h2 class="data-name hidden-info">{itemData['scientific name']}</h2>
+      <p class="data-name hidden-info">{itemData['common name']}</p>
+      <div class="input-wrapper">
+          <span id={`result-icon-${slidePosition}`} class="result-icon"></span>
+          <InputField inputId={`scientific-name-input-${slidePosition}`} placeholder="Enter scientific name..." />
+          <Button id={`check-button-${slidePosition}`} text="Check" className="check-button" />
+      </div>
+    </div>
+  ) : (
+    <p>No data available for this index.</p>
+  )}
+
+<script>
+    import { checkAnswer } from '../utils/checkAnswer.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.data-info').forEach((element) => {
+            const slidePosition = parseInt(element.getAttribute('data-slide-position') ?? '0', 10);
+            const checkButton = document.getElementById(`check-button-${slidePosition}`);
+            const inputElement = document.getElementById(`scientific-name-input-${slidePosition}`);
+            const resultIconElement = document.getElementById(`result-icon-${slidePosition}`);
+
+   function handleSubmit() {
+    if (inputElement) {
+        // Always remove the error class first
+        inputElement.classList.remove('input-error');
+
+        const userInput = inputElement.value.trim();
+
+        if (userInput === '') {
+            console.log('Input is blank');
+
+            // Trigger reflow to restart the animation
+            void inputElement.offsetWidth;
+
+            // Add the error class to start the animation
+            inputElement.classList.add('input-error');
+
+            // Exit early since input is invalid
+            return;
+        }
+
+        // Remove the error class if input is valid
+        inputElement.classList.remove('input-error');
+
+                    const correctAnswer = element.querySelector('h2').textContent;
+                    console.log(`User Input: ${userInput}`);
+                    console.log(`Correct Answer: ${correctAnswer}`);
+
+                    const isCorrect = userInput.trim() === correctAnswer.trim();
+                    resultIconElement.textContent = isCorrect ? '✅' : '❌';
+
+                    element.querySelectorAll('.hidden-info').forEach(info => {
+                        info.classList.remove('hidden-info');
+                    });
+
+                    checkAnswer(userInput, correctAnswer, slidePosition);
+
+                    const event = new CustomEvent('answersUpdated', { detail: { slidePosition } });
+                    document.dispatchEvent(event);
+
+                    inputElement.disabled = true;
+                    checkButton.disabled = true;
+                }
+            }
+
+            if (checkButton) { 
+                checkButton.addEventListener('click', handleSubmit);
+            }
+
+            // Listen for "Enter" key on the input field
+            if (inputElement) {
+                inputElement.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        handleSubmit();
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+<style>
+    .hidden-info {
+        display: none; /* Hide the info by default */
+    }
+</style>

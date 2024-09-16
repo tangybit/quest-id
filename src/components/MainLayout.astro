@@ -1,0 +1,80 @@
+---
+import Nav from './Nav.astro';
+import Fish from './Fish.astro';
+import Invert from './Invert.astro';
+import Limu from './Limu.astro';
+
+const activeSection = 'fish'; // Default active section
+---
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marine Species</title>
+    <link rel="stylesheet" href="">
+  </head>
+  <body>
+    <!-- Logo Container -->
+    <div class="logo-container">
+      <img src="/mop-logo.png" alt="Logo" class="logo" />
+    </div>
+    
+    <!-- Navigation Bar -->
+    <Nav activeSection={activeSection} />
+
+    <!-- Background Video -->
+    <video autoplay muted loop id="background-video">
+      <source src="/video/background.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+
+    <!-- Content Container -->
+    <div class="test-container">
+      <div class="test-content">
+        <div id="content-container">
+          <!-- Render all components initially, hide them by default -->
+          <div id="fish-section" class={activeSection === 'fish' ? '' : 'hidden'}>
+            <Fish />
+          </div>
+          <div id="invert-section" class={activeSection === 'invert' ? '' : 'hidden'}>
+            <Invert />
+          </div>
+          <div id="limu-section" class={activeSection === 'limu' ? '' : 'hidden'}>
+            <Limu />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function handleNavClick(event, sectionId) {
+        event.preventDefault(); // Prevent default link behavior
+        updateContent(sectionId); // Call function to update content dynamically
+      }
+
+      function updateContent(sectionId) {
+        // Hide all sections
+        const sections = document.querySelectorAll('#content-container > div');
+        sections.forEach(section => section.classList.add('hidden'));
+
+        // Show the selected section
+        const activeSection = document.getElementById(`${sectionId}-section`);
+        if (activeSection) {
+          activeSection.classList.remove('hidden');
+        }
+
+        // Update active state for nav links
+        const navLinks = document.querySelectorAll('.floating-tabs a');
+        navLinks.forEach(link => {
+          if (link.getAttribute('data-section') === sectionId) {
+            link.classList.add('active');
+          } else {
+            link.classList.remove('active');
+          }
+        });
+      }
+    </script>
+
+    
+  </body>
+</html>

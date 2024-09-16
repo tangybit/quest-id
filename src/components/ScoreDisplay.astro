@@ -1,0 +1,177 @@
+---
+import Button from './Button.astro';
+import '../styles/global.css';
+---
+
+<div class="score-table">
+    <h2>Score Summary</h2>
+    <!-- Add a new div for displaying the percentage -->
+    <div id="percentage-display" class="percentage-display"></div>
+    <!-- Scrollable container for the table -->
+    <div class="scrollable-container">
+        <table id="score-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Your Answer</th>
+                    <th>Correct Answer</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody id="score-table-body">
+                <!-- Table rows will be dynamically inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+     <!-- "Take Again" Button -->
+     <div class="take-again-button">
+        <Button 
+            id="take-again-btn" 
+            text="Take Again" 
+            className="btn-green" 
+            onClick={() => {
+                // Reset logic goes here
+                console.log('Take Again button clicked');
+                window.location.reload(); // For simplicity, reload the page to reset
+            }} 
+        />
+    </div>
+</div>
+
+<script>
+    import { getAnswers, getScore } from '../utils/checkAnswer.js'; // Ensure getScore is imported
+
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('ScoreDisplay script loaded.');
+
+        // Function to update the score table
+        function updateScoreTable() {
+            const answers = getAnswers(); // Retrieve the current answers
+            const tableBody = document.getElementById('score-table-body');
+            tableBody.innerHTML = ''; // Clear the existing rows
+
+            answers.forEach((answer, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${answer.userInput}</td>
+                    <td>${answer.correctAnswer}</td>
+                    <td>${answer.isCorrect ? '✅' : '❌'}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Calculate the score and percentage
+            const score = getScore();
+            const totalQuestions = answers.filter(answer => answer && answer.userInput).length;
+            const percentage = totalQuestions > 0 ? ((score / totalQuestions) * 100).toFixed(2) : 0;
+
+            // Log the score and percentage
+            console.log(`Score: ${score}`);
+            console.log(`Percentage: ${percentage}%`);
+
+            // Update the percentage display
+            const percentageDisplay = document.getElementById('percentage-display');
+            percentageDisplay.textContent = `Percentage: ${percentage}%`;
+        }
+
+        // Initial call to populate the score table
+        updateScoreTable();
+
+        // Listen for the 'answersUpdated' event to refresh the score table
+        document.addEventListener('answersUpdated', () => {
+            console.log('Answers updated event received in ScoreDisplay.');
+            updateScoreTable();
+        });
+
+        // Add click event listener for the "Take Again" button
+        const takeAgainBtn = document.getElementById('take-again-btn');
+        if (takeAgainBtn) {
+            takeAgainBtn.addEventListener('click', () => {
+                console.log('Take Again button clicked');
+                window.location.reload(); // Reload the page to reset
+            });
+        }
+    });
+</script>
+
+
+<style>
+
+/* Basic styling for the score table */
+.score-table {
+    margin: 20px;
+    padding: 10px;
+    border: none; /* Remove any border */
+}
+
+/* Style for the percentage display */
+.percentage-display {
+    margin: 10px 0;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Scrollable container */
+.scrollable-container {
+    max-height: 300px; /* Set a fixed height for the scrollable area */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+
+/* Style for the table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border: none; /* Remove border from the table */
+}
+
+th, td {
+    padding: 10px 40px; /* Add padding for more space between columns */
+    text-align: center;
+}
+
+/* Remove borders from the table header */
+th {
+    color: #333; /* Text color to contrast with the background */
+    border: none; /* Remove header cell borders */
+}
+
+/* Remove borders from table cells */
+td {
+    border: none;
+}
+
+/* Remove borders from table body and rows */
+tbody, tr {
+    border: none;
+}
+
+.take-again-button {
+    margin-top: 40px; /* Increase the margin to lower the button */
+    text-align: center;
+}
+
+#score-table th:nth-child(1),
+#score-table td:nth-child(1) {
+    width: 5%;
+}
+
+#score-table th:nth-child(2),
+#score-table td:nth-child(2) {
+    width: 45%;
+}
+
+#score-table th:nth-child(3),
+#score-table td:nth-child(3) {
+    width: 45%;
+}
+
+#score-table th:nth-child(4),
+#score-table td:nth-child(4) {
+    width: 5%;
+}
+
+
+</style>
