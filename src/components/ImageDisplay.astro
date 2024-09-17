@@ -58,40 +58,76 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <style>
+
 .gallery-container {
     position: relative;
-    height: 55vh; /* Adjusted the height to make the viewport smaller */
+    width: 100%;
+    max-width: 500px;
+    height: 500px; /* Increase the height to accommodate the dots */
     overflow: hidden;
-    padding-bottom: 0px;
+    margin: 0 auto;
+    padding-bottom: 0px; /* Add padding to create space for the dots */
 }
 
+/* Custom scrollbar styling for the gallery */
 .gallery {
     display: flex;
     overflow-x: scroll;
     scroll-behavior: smooth;
-    cursor: grab;
+    scroll-snap-type: x mandatory;
     width: 100%;
-    height: calc(100% - 30px); /* Adjusted to match the new container height */
-    gap: 10px; /* Adjust the gap between images */
-    padding: 0 10px; /* Optional: Add padding to the edges of the gallery */
+    height: 100%;
+    padding: 0;
+    gap: 50px;
+    
+    /* Hide the scrollbar by default, show on hover */
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: rgba(30, 58, 138, 0.5) transparent; /* Set thumb color with transparency */
 }
+
+.gallery::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+.gallery::-webkit-scrollbar-thumb {
+    background-color: rgba(30, 58, 138, 0.5); /* Translucent scrollbar thumb */
+    border-radius: 10px;
+    transition: background-color 0.3s; /* Smooth transition for color changes */
+}
+
+.gallery::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(55, 74, 191, 0.7); /* Slightly darker translucent thumb on hover */
+}
+
+.gallery:hover {
+    scrollbar-width: auto; /* Show the scrollbar when hovering */
+}
+
+.gallery::-webkit-scrollbar {
+    display: none; /* Hide the scrollbar */
+}
+
+.gallery:hover::-webkit-scrollbar {
+    display: block; /* Show the scrollbar when hovering */
+}
+
 
 .gallery-image {
-    flex: 0 0 100%; /* Reduced to 95% to leave some space between images */
-    height: 100%; /* Makes sure the image fills the height of the gallery */
+    flex: 0 0 100%; /* Allow the image to size based on its content */
+    width: 550px; /* Set a maximum width */
+    height: auto; /* Maintain aspect ratio */
+    max-height: calc(100% - 50px); /* Ensure the image does not overlap with the space for the dots */
     object-fit: contain;
-    object-position: center;
-    user-select: none;
+    scroll-snap-align: center;
 }
-
-
 
 .dots {
     display: flex;
     justify-content: center;
     padding-top: 10px;
     position: absolute;
-    bottom: 10px;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 2;
@@ -109,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
 }
 
 .dot.active {
-    background-color: #45a049;
+    background-color: #1E3A8A;
     transform: scale(1.5);
 }
 </style>

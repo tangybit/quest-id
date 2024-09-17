@@ -44,8 +44,8 @@ html, body {
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 700px;
-  height: 550px;
+  width: 750px;
+  height: 700px;
   text-align: center;
 }
 
@@ -53,8 +53,9 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start; /* Moves content towards the top */
   height: 100%;
+  gap: 10px; /* Optional: add space between children */
 }
 
 /* Slider Wrapper */
@@ -73,46 +74,63 @@ html, body {
   overflow: hidden;
 }
 
-
 .data-info {
-  text-align: center;
+  display: flex;
+  flex-direction: column; /* Stack answer and input vertically */
+  align-items: center;
 }
 
 .data-info h2 {
   font-size: 1.5rem;
   font-style: italic;
-  margin-bottom: 5px;
+  margin-bottom: 2px; /* Reduce the bottom margin */
 }
 
 .data-info p {
   font-size: 1rem;
   font-weight: bold;
+  margin-top: 0; /* Remove any default top margin */
 }
 
+/* Style for the container holding the label and input wrapper */
+.input-container {
+  display: flex;
+  flex-direction: column; /* Stack the label above the input wrapper */
+  align-items: center;
+  gap: 10px; /* Reduce the gap to bring the label closer to the input box */
+}
+
+/* Style for the input wrapper to keep elements in a row */
 .input-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 20px;
+  width: 100%;
+  margin-top: 10px;
+  
 }
 
+/* Input styles */
 .custom-input {
-  width: 100%;
-  max-width: 800px;
-  height: 35px;
-  padding: 5px;
+  width: 100%; /* Make the input take the full width of its container */
+  max-width: 800px; /* Increase this value to make the input box longer */
+  height: 30px;
+  width: 200px;
+  padding: 10px;
   font-size: 16px;
   border-radius: 5px;
   border: 1px solid #ccc;
   box-sizing: border-box;
 }
 
-#input-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+/* Label styles */
+.input-label {
+  font-size: 20px;
+  text-align: center;
+  padding-top: 20px;
 }
+
 
 .check-button {
   padding: 8px 0x;
@@ -191,4 +209,10 @@ html, body {
 .custom-input::placeholder {
   font-size: 0.875rem; /* Adjust this value as needed */
   color: #888; /* Optional: change placeholder text color */
+}
+
+/* Apply shake effect to .shake-container */
+.shake-container.input-error {
+  border: 2px solid red; /* Adds a red border */
+  animation: shake 0.3s, fadeBorder 1s forwards; /* Apply shake and border color fade */
 }

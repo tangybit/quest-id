@@ -1,0 +1,250 @@
+---
+import DataDisplay from './DataDisplay.astro'; 
+import ScoreDisplay from './ScoreDisplay.astro';
+import ImageDisplay from './ImageDisplay.astro';
+
+// Utility function to shuffle an array
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+// Accept 'dataGroupedByIndex' and 'sliderId' as props
+const { dataGroupedByIndex, sliderId } = Astro.props;
+const dataEntries = shuffle(Object.entries(dataGroupedByIndex));
+
+---
+
+<div id="carousel-wrapper" data-slider-id={sliderId}>
+ 
+    <button id="main-left-arrow" class="main-nav-arrow main-left-arrow" aria-label="Previous set">&lt;</button>
+
+    {dataEntries.length ? (
+        dataEntries.map(([index, dataList], slidePosition) => {
+            return (
+                <div 
+                    class="carousel-container hidden" 
+                    key={index} 
+                    data-index={index}
+                    data-slide-position={slidePosition}
+                >
+                    <ImageDisplay imagePaths={dataList[0].imagePaths} /> 
+                    <DataDisplay 
+                    index={index}
+                    dataGroupedByIndex={dataGroupedByIndex}
+                    slidePosition={slidePosition + 1} 
+                    sliderId={sliderId}
+                    />
+                </div>
+            );
+        })
+    ) : (
+        <p>No data available.</p>
+    )}
+
+    <!-- Final Slide - Moved outside of the map loop -->
+    <div class="carousel-container hidden" data-final-slide>
+        <ScoreDisplay sliderId={sliderId} />
+    </div>
+
+    <!-- Main Right Arrow for Next Set -->
+    <button id="main-right-arrow" class="main-nav-arrow main-right-arrow" aria-label="Next set">&gt;</button>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Function to initialize the carousel once the elements are available
+
+        function initializeCarousel() {
+            // Select all species sliders using the data-slider-id attribute
+            const speciesSliders = document.querySelectorAll('[data-slider-id]');
+            speciesSliders.forEach((speciesSlider) => {
+                console.log('speciesSlider:', speciesSlider.innerHTML);
+
+                // Scope elements within this speciesSlider
+                const carousels = speciesSlider.querySelectorAll('.carousel-container');
+                const mainLeftArrow = speciesSlider.querySelector('#main-left-arrow'); // Select by ID
+                const mainRightArrow = speciesSlider.querySelector('#main-right-arrow'); // Select by ID
+                let currentSetIndex = 0;
+
+                console.log('Number of carousels found:', carousels.length);
+                console.log('mainLeftArrow:', mainLeftArrow);
+                console.log('mainRightArrow:', mainRightArrow);
+
+                if (carousels.length > 0) {
+                    showCarousel(currentSetIndex);
+                }
+
+                function showCarousel(index) {
+                    carousels.forEach((carousel) => carousel.classList.add('hidden'));
+                    const currentCarousel = carousels[index];
+                    currentCarousel.classList.remove('hidden');
+
+                    const isAnswered = currentCarousel.getAttribute('data-answered') === 'true';
+                    console.log(`Slide ${index + 1}: isAnswered = ${isAnswered}`);
+
+                    const isFinalSlide = currentCarousel.hasAttribute('data-final-slide');
+
+                    if (mainRightArrow) {
+                        mainRightArrow.disabled = isFinalSlide || !isAnswered;
+                    }
+                    if (mainLeftArrow) {
+                        mainLeftArrow.disabled = index === 0;
+                    }
+                }
+
+                if (mainLeftArrow) {
+                    mainLeftArrow.addEventListener('click', () => {
+                        currentSetIndex = (currentSetIndex - 1 + carousels.length) % carousels.length;
+                        showCarousel(currentSetIndex);
+                    });
+                }
+
+                if (mainRightArrow) {
+                    mainRightArrow.addEventListener('click', () => {
+                        console.log('Next button clicked');
+                        const currentCarousel = carousels[currentSetIndex];
+                        const isAnswered = currentCarousel.getAttribute('data-answered') === 'true';
+                        const shakeContainer = currentCarousel.querySelector('.shake-container');
+
+                        console.log('Shake container:', shakeContainer);
+
+                        if (!isAnswered && !currentCarousel.hasAttribute('data-final-slide')) {
+                            if (shakeContainer) {
+                                shakeContainer.classList.remove('input-error');
+                                void shakeContainer.offsetWidth;
+                                shakeContainer.classList.add('input-error');
+                                console.log('Shake effect applied to shakeContainer');
+                            } else {
+                                console.error('Shake container not found.');
+                            }
+                            return;
+                        }
+
+                        currentSetIndex = (currentSetIndex + 1) % carousels.length;
+                        showCarousel(currentSetIndex);
+
+                        const nextCarousel = carousels[currentSetIndex];
+                        if (nextCarousel.getAttribute('data-answered') !== 'true') {
+                            nextCarousel.setAttribute('data-answered', 'false');
+                        }
+                    });
+                } else {
+                    console.error('mainRightArrow not found.');
+                }
+
+                document.addEventListener('answersUpdated', () => {
+                    const carousel = carousels[currentSetIndex];
+                    if (carousel) {
+                        carousel.setAttribute('data-answered', 'true');
+                        showCarousel(currentSetIndex);
+                    }
+                });
+            });
+        }
+
+        // Use MutationObserver to detect when the .carousel-container elements are added to the DOM
+        const observer = new MutationObserver((mutationsList, observer) => {
+            const carousels = document.querySelectorAll('.carousel-container');
+            if (carousels.length > 0) {
+                // Once the elements are found, initialize the carousel and stop observing
+                initializeCarousel();
+                observer.disconnect();
+            }
+        });
+
+        // Start observing the document body for changes
+        observer.observe(document.body, { childList: true, subtree: true });
+    });
+</script>
+
+
+
+<style>
+    
+ 
+/* Styles for the carousel and arrows */
+#carousel-wrapper {
+    position: relative; /* This makes #carousel-wrapper the reference for absolutely positioned children */
+    width: 100%; /* Set a fixed width to the wrapper to control the arrow positioning */
+    max-width: 800px; /* Optional: Set a max-width to prevent overflow */
+    margin: 0 auto; /* Center the container horizontally */
+    height: 500px
+}
+
+#carousel-wrapper {
+    position: relative; /* This makes #carousel-wrapper the reference for absolutely positioned children */
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    height: 500px; /* Fixed height to anchor the arrows' positions */
+}
+
+.carousel-container {
+   width: 100%;
+   height: 100%;
+}
+
+.main-nav-arrow {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 10;
+    position: absolute; /* Use absolute positioning */
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%); /* Offset vertically by 50% of the button's height */
+}
+
+.main-left-arrow {
+    left: -75px; /* Position from the left edge of the container */
+}
+
+.main-right-arrow {
+    right: -75px; /* Position from the right edge of the container */
+}
+
+.main-nav-arrow:hover {
+    background-color: #45a049;
+}
+
+.hidden {
+    display: none;
+}
+
+@keyframes fadeBorder {
+  0% {
+    border-color: red;
+  }
+  100% {
+    border-color: #ccc; /* Original border color */
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
+}
+
+
+</style>
+      

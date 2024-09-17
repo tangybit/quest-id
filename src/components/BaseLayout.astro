@@ -1,0 +1,81 @@
+---
+import Nav from './Nav.astro';
+import Fish from './Fish.astro';
+import Invert from './Invert.astro';
+import Limu from './Limu.astro';
+---
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marine Species</title>
+  <link rel="stylesheet" href="">
+</head>
+<body>
+  <div class="logo-container">
+    <img src="/mop-logo.png" alt="Logo" class="logo" />
+  </div>
+
+  <!-- Navigation Bar -->
+  <Nav />
+
+  <!-- Background Video -->
+  <video autoplay muted loop id="background-video">
+    <source src="/video/background.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <!-- Content Container -->
+  <div class="test-container">
+    <div class="test-content">
+
+      <!-- Fish Section -->
+      <div id="fish" class="content-section">
+        <Fish />
+      </div>
+
+      <!-- Invert Section -->
+      <div id="invert" class="content-section hidden">
+        <Invert />
+      </div>
+
+      <!-- Limu Section -->
+      <div id="limu" class="content-section hidden">
+        <Limu />
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Function to update content visibility based on hash
+    function updateContentVisibility() {
+      const hash = window.location.hash.replace('#', '') || 'fish'; // Default to 'fish' if no hash
+
+      // Hide all content sections
+      document.querySelectorAll('.content-section').forEach(section => {
+        section.classList.add('hidden');
+      });
+
+      // Show the section that matches the hash
+      const activeSection = document.getElementById(hash);
+      if (activeSection) {
+        activeSection.classList.remove('hidden');
+      }
+    }
+
+    // Listen for hash changes
+    window.addEventListener('hashchange', updateContentVisibility);
+
+    // Update content visibility on page load
+    document.addEventListener('DOMContentLoaded', updateContentVisibility);
+  </script>
+
+  <style>
+    .hidden {
+      display: none;
+    }
+  </style>
+</body>
+</html>

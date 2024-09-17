@@ -1,10 +1,10 @@
 ---
 import { speciesData } from '../utils/SpeciesData.js';
-import MainSlider from './MainSlider.astro';
+import Slider from './Slider.astro';
 
 const fishDataGroupedByIndex = speciesData.fish;
 ---
 
 <div>
-    <MainSlider dataGroupedByIndex={fishDataGroupedByIndex} />
+    <Slider dataGroupedByIndex={fishDataGroupedByIndex} sliderId="fish" />
 </div>

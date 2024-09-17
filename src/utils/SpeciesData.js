@@ -2,14 +2,14 @@ import { fetchData } from './DataFetcher.js';
 
 // Fetch data for different sections
 const fishDataGroupedByIndex = fetchData('fishes.csv', 'fishes');
-// const limuDataGroupedByIndex = fetchData('limu.csv', 'limu');
-// const invertDataGroupedByIndex = fetchData('invert.csv', 'invert');
+const limuDataGroupedByIndex = fetchData('limu.csv', 'limu');
+const invertDataGroupedByIndex = fetchData('invert.csv', 'invert');
 
 // Export all datasets as an object
 export const speciesData = {
     fish: fishDataGroupedByIndex,
-    // limu: limuDataGroupedByIndex,
-    // invert: invertDataGroupedByIndex
+    limu: limuDataGroupedByIndex,
+    invert: invertDataGroupedByIndex
 };
 
 

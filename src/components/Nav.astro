@@ -1,23 +1,31 @@
 ---
 const links = [
-  { id: 'fish', label: 'Fishes', path: '/fish' },
-  { id: 'invert', label: 'Invertebrates', path: '/invert' },
-  { id: 'limu', label: 'Limu', path: '/limu' },
-  { id: 'all', label: 'All Species' },
-  { id: 'random-100', label: 'Randomized 100' }
+  { id: 'fish', label: 'Fishes', path: '#fish' },
+  { id: 'invert', label: 'Invertebrates', path: '#invert' },
+  { id: 'limu', label: 'Limu', path: '#limu' },
+  { id: 'all', label: 'All Species', path: '#all' },
+  { id: 'random-100', label: 'Random 100', path: '#random-100' }
 ];
+
+// Destructure the props passed down from BaseLayout
+const { activeSection, onNavClick } = Astro.props;
 ---
 <nav class="floating-tabs">
   <ul>
     {links.map(link => (
       <li key={link.id}>
-        <!-- Add a 'data-section' attribute to identify the section in JS -->
-        <a href="#" data-section={link.id} onClick={(e) => handleNavClick(e, link.id)} class={Astro.props.activeSection === link.id ? 'active' : ''}>{link.label}</a>
+        <a 
+          href={link.path} 
+          data-section={link.id} 
+          onClick={(e) => onNavClick(e, link.id)} 
+          class={activeSection === link.id ? 'active' : ''}
+        >
+          {link.label}
+        </a>
       </li>
     ))}
   </ul>
 </nav>
-
 
 <style>
   /* Floating Tabs on the Left */

@@ -1,35 +1,52 @@
-let answers = [];
-let score = 0;
+let answersBySliderId = {};
+let scoresBySliderId = {};
 
-export function checkAnswer(userInput, correctAnswer, slideIndex) {
-    const isCorrect = userInput.trim() === correctAnswer.trim();
+
+export function checkAnswer(sliderId, userInput, correctAnswer, slideIndex) {
+    console.log('Received correctAnswer:', correctAnswer, 'of type:', typeof correctAnswer);
+
+    // Initialize storage for the given sliderId if it doesn't exist
+    if (!answersBySliderId[sliderId]) {
+        answersBySliderId[sliderId] = [];
+    }
+    if (!scoresBySliderId[sliderId]) {
+        scoresBySliderId[sliderId] = 0;
+    }
+
+    // Convert correctAnswer to a string to handle any data type
+    const correctAnswerStr = String(correctAnswer).trim();
+    const isCorrect = userInput.trim() === correctAnswerStr;
 
     // Ensure the array can accommodate the given slideIndex
-    if (slideIndex >= answers.length) {
-        answers.length = slideIndex + 1; // Adjust the length of the array to fit the slideIndex
+    if (slideIndex >= answersBySliderId[sliderId].length) {
+        answersBySliderId[sliderId].length = slideIndex + 1;
     }
 
     // Update the answer for the given slide
-    answers[slideIndex] = {
+    answersBySliderId[sliderId][slideIndex] = {
         userInput: userInput.trim(),
-        correctAnswer: correctAnswer.trim(),
+        correctAnswer: correctAnswerStr,
         isCorrect: isCorrect,
         answered: true,
     };
 
-    // Recalculate the score, filtering out any undefined or empty elements
-    score = answers.filter(answer => answer && answer.isCorrect).length;
+    // Recalculate the score for this sliderId
+    scoresBySliderId[sliderId] = answersBySliderId[sliderId].filter(answer => answer && answer.isCorrect).length;
 
-    console.log('Updated answers:', answers);
-    console.log('Current score:', score);
+    console.log(`Updated answers for ${sliderId}:`, answersBySliderId[sliderId]);
+    console.log(`Current score for ${sliderId}:`, scoresBySliderId[sliderId]);
+
+    // Dispatch the 'answersUpdated' event with the sliderId
+    document.dispatchEvent(new CustomEvent('answersUpdated', { detail: { sliderId } }));
 }
 
-// Function to get the current score
-export function getScore() {
-    return score;
+
+
+export function getScore(sliderId) {
+    return scoresBySliderId[sliderId] || 0;
 }
 
-export function getAnswers() {
-    // Return only the answered elements
-    return answers.filter(answer => answer !== undefined);
+export function getAnswers(sliderId) {
+    return answersBySliderId[sliderId] ? answersBySliderId[sliderId].filter(answer => answer !== undefined) : [];
 }
+

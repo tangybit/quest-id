@@ -1,6 +1,7 @@
 ---
 import Button from './Button.astro';
 import '../styles/global.css';
+const { sliderId } = Astro.props; // Get sliderId as a prop
 ---
 
 <div class="score-table">
@@ -32,7 +33,6 @@ import '../styles/global.css';
             className="btn-green" 
             onClick={() => {
                 // Reset logic goes here
-                console.log('Take Again button clicked');
                 window.location.reload(); // For simplicity, reload the page to reset
             }} 
         />
@@ -40,14 +40,24 @@ import '../styles/global.css';
 </div>
 
 <script>
-    import { getAnswers, getScore } from '../utils/checkAnswer.js'; // Ensure getScore is imported
+    import { getAnswers, getScore } from '../utils/checkAnswer.js';
 
     document.addEventListener('DOMContentLoaded', () => {
-        console.log('ScoreDisplay script loaded.');
+        const sliderId = Astro.props.sliderId;
+        console.log('ScoreDisplay initialized with sliderId:', sliderId);
 
-        // Function to update the score table
+        // Register the event listener as early as possible
+        document.addEventListener('answersUpdated', (event) => {
+            console.log('answersUpdated event received. Current sliderId:', sliderId, 'Event sliderId:', event.detail.sliderId);
+
+            if (event.detail.sliderId === sliderId) {
+                console.log('Updating score table for sliderId:', sliderId);
+                updateScoreTable();
+            }
+        });
+
         function updateScoreTable() {
-            const answers = getAnswers(); // Retrieve the current answers
+            const answers = getAnswers(sliderId); // Retrieve the answers for the current sliderId
             const tableBody = document.getElementById('score-table-body');
             tableBody.innerHTML = ''; // Clear the existing rows
 
@@ -63,34 +73,20 @@ import '../styles/global.css';
             });
 
             // Calculate the score and percentage
-            const score = getScore();
-            const totalQuestions = answers.filter(answer => answer && answer.userInput).length;
+            const score = getScore(sliderId);
+            const totalQuestions = answers.length;
             const percentage = totalQuestions > 0 ? ((score / totalQuestions) * 100).toFixed(2) : 0;
 
-            // Log the score and percentage
-            console.log(`Score: ${score}`);
-            console.log(`Percentage: ${percentage}%`);
-
-            // Update the percentage display
             const percentageDisplay = document.getElementById('percentage-display');
             percentageDisplay.textContent = `Percentage: ${percentage}%`;
         }
 
-        // Initial call to populate the score table
         updateScoreTable();
 
-        // Listen for the 'answersUpdated' event to refresh the score table
-        document.addEventListener('answersUpdated', () => {
-            console.log('Answers updated event received in ScoreDisplay.');
-            updateScoreTable();
-        });
-
-        // Add click event listener for the "Take Again" button
         const takeAgainBtn = document.getElementById('take-again-btn');
         if (takeAgainBtn) {
             takeAgainBtn.addEventListener('click', () => {
-                console.log('Take Again button clicked');
-                window.location.reload(); // Reload the page to reset
+                window.location.reload();
             });
         }
     });
@@ -116,7 +112,8 @@ import '../styles/global.css';
 
 /* Scrollable container */
 .scrollable-container {
-    max-height: 300px; /* Set a fixed height for the scrollable area */
+    max-height: 450px; 
+    max-width: 500px;/* Set a fixed height for the scrollable area */
     overflow-y: auto; /* Enable vertical scrolling */
 }
 
