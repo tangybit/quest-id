@@ -29,7 +29,7 @@ const { imagePaths } = Astro.props;
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // Select all gallery containers on the page
+
     const galleryContainers = document.querySelectorAll('.gallery-container');
     
     galleryContainers.forEach(galleryContainer => {
@@ -38,19 +38,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const imageCount = dots.length;
 
         if (gallery) {
-            // Add scroll event listener to each gallery
+        
             gallery.addEventListener('scroll', () => {
                 const scrollWidth = gallery.scrollWidth - gallery.clientWidth;
                 const scrollPosition = gallery.scrollLeft;
                 const scrollIndex = Math.round((scrollPosition / scrollWidth) * (imageCount - 1));
-                
-                // Update dots based on the current scroll position
+              
                 dots.forEach((dot, idx) => {
                     dot.classList.toggle('active', idx === scrollIndex);
                 });
             });
 
-            // Set the first dot as active initially
             if (dots.length > 0) dots[0].classList.add('active');
         }
     });
@@ -63,13 +61,12 @@ document.addEventListener('DOMContentLoaded', () => {
     position: relative;
     width: 100%;
     max-width: 500px;
-    height: 500px; /* Increase the height to accommodate the dots */
+    height: 500px; 
     overflow: hidden;
     margin: 0 auto;
-    padding-bottom: 0px; /* Add padding to create space for the dots */
+    padding-bottom: 0px; 
 }
 
-/* Custom scrollbar styling for the gallery */
 .gallery {
     display: flex;
     overflow-x: scroll;
@@ -79,10 +76,8 @@ document.addEventListener('DOMContentLoaded', () => {
     height: 100%;
     padding: 0;
     gap: 50px;
-    
-    /* Hide the scrollbar by default, show on hover */
-    scrollbar-width: thin; /* Firefox */
-    scrollbar-color: rgba(30, 58, 138, 0.5) transparent; /* Set thumb color with transparency */
+    scrollbar-width: thin; 
+    scrollbar-color: rgba(30, 58, 138, 0.5) transparent;
 }
 
 .gallery::-webkit-scrollbar {
@@ -91,33 +86,33 @@ document.addEventListener('DOMContentLoaded', () => {
 }
 
 .gallery::-webkit-scrollbar-thumb {
-    background-color: rgba(30, 58, 138, 0.5); /* Translucent scrollbar thumb */
+    background-color: rgba(30, 58, 138, 0.5);
     border-radius: 10px;
-    transition: background-color 0.3s; /* Smooth transition for color changes */
+    transition: background-color 0.3s;
 }
 
 .gallery::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(55, 74, 191, 0.7); /* Slightly darker translucent thumb on hover */
+    background-color: rgba(55, 74, 191, 0.7);
 }
 
 .gallery:hover {
-    scrollbar-width: auto; /* Show the scrollbar when hovering */
+    scrollbar-width: auto;
 }
 
 .gallery::-webkit-scrollbar {
-    display: none; /* Hide the scrollbar */
+    display: none;
 }
 
 .gallery:hover::-webkit-scrollbar {
-    display: block; /* Show the scrollbar when hovering */
+    display: block;
 }
 
 
 .gallery-image {
-    flex: 0 0 100%; /* Allow the image to size based on its content */
-    width: 550px; /* Set a maximum width */
-    height: auto; /* Maintain aspect ratio */
-    max-height: calc(100% - 50px); /* Ensure the image does not overlap with the space for the dots */
+    flex: 0 0 100%;
+    width: 550px;
+    height: auto;
+    max-height: calc(100% - 50px);
     object-fit: contain;
     scroll-snap-align: center;
 }
@@ -137,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
     height: 10px;
     width: 10px;
     margin: 0 5px;
-    background-color: #bbb;
+    background-color: #666;
     border-radius: 50%;
     display: inline-block;
     transition: background-color 0.3s, transform 0.3s;

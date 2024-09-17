@@ -8,7 +8,7 @@ const { id, text, onClick, display = 'inline-block', disabled = false, className
   style={`display: ${display};`}
   disabled={disabled}
   onClick={() => {
-    console.log('Button clicked:', id); // Debug: Log when button is clicked
+    console.log('Button clicked:', id); 
     if (onClick) onClick();
   }}>
   {text}

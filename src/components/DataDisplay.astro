@@ -13,7 +13,7 @@ const itemData = itemList ? itemList[0] : null;
   <p class="data-name hidden-info">{itemData['common name']}</p>
   
   <div class="input-container">
-    <!-- Label for the input field -->
+
     <label for={`scientific-name-input-${sliderId}-${slidePosition}`} class="input-label">What is the scientific name of this species?</label>
     
     <div class="input-wrapper">
@@ -34,80 +34,59 @@ const itemData = itemList ? itemList[0] : null;
     import { checkAnswer } from '../utils/checkAnswer.js';
 
     document.addEventListener('DOMContentLoaded', () => {
-        // Select all data-info elements
+     
         document.querySelectorAll('.data-info').forEach((element) => {
-            // Retrieve the slider ID and slide position
+          
             const sliderId = element.getAttribute('data-slider-id');
             const slidePosition = parseInt(element.getAttribute('data-slide-position') ?? '0', 10);
-
-            // Use sliderId in the IDs of the elements to scope the query
             const checkButton = document.getElementById(`check-button-${sliderId}-${slidePosition}`);
             const inputElement = document.getElementById(`scientific-name-input-${sliderId}-${slidePosition}`);
             const resultIconElement = document.getElementById(`result-icon-${sliderId}-${slidePosition}`);
 
             function handleSubmit() {
                 if (inputElement) {
-                    // Always remove the error class first
                     inputElement.classList.remove('input-error');
 
                     const userInput = inputElement.value.trim();
 
                     if (userInput === '') {
-                        console.log('Input is blank');
-
-                        // Trigger reflow to restart the animation
                         void inputElement.offsetWidth;
-
-                        // Add the error class to start the animation
                         inputElement.classList.add('input-error');
 
-                        // Exit early since input is invalid
                         return;
                     }
 
-                    // Remove the error class if input is valid
+                 
                     inputElement.classList.remove('input-error');
 
                     const correctAnswer = element.querySelector('h2').textContent;
-                    console.log(`User Input: ${userInput}`);
-                    console.log(`Correct Answer: ${correctAnswer}`);
-
                     const isCorrect = userInput.trim() === correctAnswer.trim();
                     resultIconElement.textContent = isCorrect ? '✅' : '❌';
 
-                    // Reveal hidden info
                     element.querySelectorAll('.hidden-info').forEach(info => {
                         info.classList.remove('hidden-info');
                     });
 
-                    // Remove the label element
                     const labelElement = element.querySelector('.input-label');
                     if (labelElement) {
                         labelElement.remove();
                     }
 
-                    // Use checkAnswer utility
-                    console.log('Calling checkAnswer with:', { sliderId, userInput, correctAnswer, slidePosition });
                     checkAnswer(sliderId, userInput, correctAnswer, slidePosition);
 
                     const event = new CustomEvent('answersUpdated', { detail: { slidePosition, sliderId } });
-                    console.log('Dispatching answersUpdated event with sliderId:', sliderId);
                     document.dispatchEvent(event);
 
-
-
-                    // Disable the input and button after submission
                     inputElement.disabled = true;
                     checkButton.disabled = true;
                 }
             }
 
-            // Add click event listener to the check button
             if (checkButton) {
                 checkButton.addEventListener('click', handleSubmit);
             }
 
-            // Listen for "Enter" key on the input field
+        
             if (inputElement) {
                 inputElement.addEventListener('keydown', (event) => {
                     if (event.key === 'Enter') {
@@ -119,14 +98,10 @@ const itemData = itemList ? itemList[0] : null;
     });
 </script>
 
-
 <style>
-  /* Add margin to the answer when it is displayed */
+
 .hidden-info {
-    display: none; /* Keep hidden initially */
+    display: none; 
 }
-
-
-
 
 </style>

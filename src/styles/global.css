@@ -2,15 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-/* General Styles */
+
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden; /* Prevent scrolling */
+  overflow: hidden;
 }
 
-/* Background Video */
 #background-video {
   position: fixed;
   top: 0;
@@ -21,20 +20,19 @@ html, body {
   z-index: -1;
 }
 
-/* Logo */
+
 .logo-container {
   position: fixed;
   top: 50px;
-  right: 80px;
+  left: 300px; 
   z-index: 10;
 }
 
 .logo {
-  width: 100px;
+  width: 150px;
   height: auto;
 }
 
-/* Test Container */
 .test-container {
   position: fixed;
   top: 50%;
@@ -44,7 +42,7 @@ html, body {
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 750px;
+  width: 700px;
   height: 700px;
   text-align: center;
 }
@@ -53,12 +51,12 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* Moves content towards the top */
+  justify-content: flex-start;
   height: 100%;
-  gap: 10px; /* Optional: add space between children */
+  gap: 10px;
 }
 
-/* Slider Wrapper */
+
 .slider-wrapper {
   display: flex;
   align-items: center;
@@ -68,7 +66,6 @@ html, body {
   position: relative;
 }
 
-/* Image Container */
 .slider-container {
   max-width: 700px;
   overflow: hidden;
@@ -76,45 +73,43 @@ html, body {
 
 .data-info {
   display: flex;
-  flex-direction: column; /* Stack answer and input vertically */
+  flex-direction: column;
   align-items: center;
 }
 
 .data-info h2 {
   font-size: 1.5rem;
   font-style: italic;
-  margin-bottom: 2px; /* Reduce the bottom margin */
+  margin-bottom: 2px;
 }
 
 .data-info p {
   font-size: 1rem;
   font-weight: bold;
-  margin-top: 0; /* Remove any default top margin */
+  margin-top: 0;
 }
 
-/* Style for the container holding the label and input wrapper */
+
 .input-container {
   display: flex;
-  flex-direction: column; /* Stack the label above the input wrapper */
+  flex-direction: column; 
   align-items: center;
-  gap: 10px; /* Reduce the gap to bring the label closer to the input box */
+  gap: 10px;
 }
 
-/* Style for the input wrapper to keep elements in a row */
 .input-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 20px;
   width: 100%;
-  margin-top: 10px;
+  margin-top: px;
   
 }
 
-/* Input styles */
 .custom-input {
-  width: 100%; /* Make the input take the full width of its container */
-  max-width: 800px; /* Increase this value to make the input box longer */
+  width: 100%;
+  max-width: 800px;
   height: 30px;
   width: 200px;
   padding: 10px;
@@ -124,7 +119,6 @@ html, body {
   box-sizing: border-box;
 }
 
-/* Label styles */
 .input-label {
   font-size: 20px;
   text-align: center;
@@ -147,11 +141,10 @@ html, body {
 }
 
 .result-icon {
-  margin-right: 10px; /* Adjust spacing */
-  font-size: 24px; /* Size of the icon */
+  margin-right: 10px; 
+  font-size: 24px;
 }
 
-/* Add this to your global CSS */
 .btn {
   padding: 10px 20px;
   border: none;
@@ -180,7 +173,7 @@ html, body {
     border-color: red;
   }
   100% {
-    border-color: #ccc; /* Original border color */
+    border-color: #ccc; 
   }
 }
 
@@ -200,19 +193,11 @@ html, body {
 }
 
 .input-error {
-  border: 2px solid red; /* Adds a red border */
-  animation: shake 0.3s, fadeBorder 1s forwards; /* Apply shake and border color fade */
+  border: 2px solid red;
+  animation: shake 0.3s, fadeBorder 1s forwards;
 }
 
-
-/* Adjust the font size of the placeholder text */
 .custom-input::placeholder {
-  font-size: 0.875rem; /* Adjust this value as needed */
-  color: #888; /* Optional: change placeholder text color */
-}
-
-/* Apply shake effect to .shake-container */
-.shake-container.input-error {
-  border: 2px solid red; /* Adds a red border */
-  animation: shake 0.3s, fadeBorder 1s forwards; /* Apply shake and border color fade */
+  font-size: 0.875rem;
+  color: #888;
 }

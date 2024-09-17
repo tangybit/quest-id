@@ -1,0 +1,29 @@
+---
+import { speciesData } from '../../utils/SpeciesData.js';
+import Slider from '../Slider.astro';
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+const allSpeciesArray = [
+  ...Object.values(speciesData.fish),
+  ...Object.values(speciesData.invert),
+  ...Object.values(speciesData.limu),
+];
+
+const selectedSpeciesArray = shuffle(allSpeciesArray).slice(0, 100);
+const randomSpeciesDataGroupedByIndex = {};
+selectedSpeciesArray.forEach((item, index) => {
+  randomSpeciesDataGroupedByIndex[index] = item;
+});
+
+---
+
+<div>
+  <Slider dataGroupedByIndex={randomSpeciesDataGroupedByIndex} sliderId="random-100" />
+</div>

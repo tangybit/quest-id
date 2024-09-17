@@ -7,10 +7,11 @@ const links = [
   { id: 'random-100', label: 'Random 100', path: '#random-100' }
 ];
 
-// Destructure the props passed down from BaseLayout
 const { activeSection, onNavClick } = Astro.props;
 ---
-<nav class="floating-tabs">
+
+<div class="nav-container">
+  <h2>Practice Exams</h2>
   <ul>
     {links.map(link => (
       <li key={link.id}>
@@ -25,46 +26,61 @@ const { activeSection, onNavClick } = Astro.props;
       </li>
     ))}
   </ul>
-</nav>
+</div>
 
 <style>
-  /* Floating Tabs on the Left */
-  .floating-tabs {
-    position: fixed;
-    top: 50%;
-    left: 20px; /* Adjust for desired distance from the left edge */
-    transform: translateY(-50%);
-  }
 
-  .floating-tabs ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-  }
+.nav-container {
+  position: fixed;
+  top: 30%;
+  left: 15%;
+  width: 220px;
+  padding: 20px;
+  background-color: rgba(0, 0, 128, 0.5);
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
 
-  .floating-tabs ul li {
-    margin: 10px 0;
-  }
+.nav-container h2 {
+  color: white;
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
 
-  .floating-tabs ul li a {
-    display: inline-block;
-    padding: 10px 15px;
-    color: white;
-    text-decoration: none;
-    background-color: transparent;
-    border: 2px solid white;
-    border-radius: 50%;
-    transition: background-color 0.3s, transform 0.2s;
-  }
+.nav-container ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+}
 
-  .floating-tabs ul li a:hover {
-    background-color: white;
-    color: #333;
-    transform: scale(1.1);
-  }
+.nav-container ul li {
+  margin: 10px 0;
+}
 
-  .floating-tabs ul li a.active {
-    background-color: #777;
-    color: white;
-  }
+.nav-container ul li a {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 5px;
+  display: inline-block; 
+  transition: color 0.3s, transform 0.3s, font-weight 0.3s;
+}
+
+.nav-container ul li a:hover {
+  font-weight: bold; 
+  transform: translateY(-5px); 
+}
+
+.nav-container ul li a.active {
+  color: #000; 
+  font-weight: bold; 
+  border-radius: 5px; 
+  padding: 5px 10px; 
+}
+
+
+
 </style>

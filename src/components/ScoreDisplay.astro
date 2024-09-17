@@ -1,14 +1,13 @@
 ---
 import Button from './Button.astro';
-import '../styles/global.css';
-const { sliderId } = Astro.props; // Get sliderId as a prop
+const { sliderId } = Astro.props; 
 ---
 
-<div class="score-table">
+<div class="score-table" data-slider-id={sliderId}>
     <h2>Score Summary</h2>
-    <!-- Add a new div for displaying the percentage -->
+   
     <div id="percentage-display" class="percentage-display"></div>
-    <!-- Scrollable container for the table -->
+
     <div class="scrollable-container">
         <table id="score-table">
             <thead>
@@ -20,20 +19,19 @@ const { sliderId } = Astro.props; // Get sliderId as a prop
                 </tr>
             </thead>
             <tbody id="score-table-body">
-                <!-- Table rows will be dynamically inserted here -->
+               
             </tbody>
         </table>
     </div>
 
-     <!-- "Take Again" Button -->
-     <div class="take-again-button">
+    <div class="take-again-button">
         <Button 
             id="take-again-btn" 
             text="Take Again" 
             className="btn-green" 
             onClick={() => {
-                // Reset logic goes here
-                window.location.reload(); // For simplicity, reload the page to reset
+            
+                window.location.reload(); 
             }} 
         />
     </div>
@@ -42,24 +40,33 @@ const { sliderId } = Astro.props; // Get sliderId as a prop
 <script>
     import { getAnswers, getScore } from '../utils/checkAnswer.js';
 
+
     document.addEventListener('DOMContentLoaded', () => {
-        const sliderId = Astro.props.sliderId;
-        console.log('ScoreDisplay initialized with sliderId:', sliderId);
 
-        // Register the event listener as early as possible
-        document.addEventListener('answersUpdated', (event) => {
-            console.log('answersUpdated event received. Current sliderId:', sliderId, 'Event sliderId:', event.detail.sliderId);
+        const scoreTables = document.querySelectorAll('.score-table');
 
-            if (event.detail.sliderId === sliderId) {
-                console.log('Updating score table for sliderId:', sliderId);
-                updateScoreTable();
+        scoreTables.forEach((scoreTable) => {
+        
+            const sliderId = scoreTable.getAttribute('data-slider-id');
+            if (!sliderId) {
+                return;
             }
+
+            document.addEventListener('answersUpdated', (event) => {
+
+
+                if (event.detail.sliderId === sliderId) {
+                    updateScoreTable(scoreTable, sliderId);
+                }
+            });
+
+            updateScoreTable(scoreTable, sliderId);
         });
 
-        function updateScoreTable() {
-            const answers = getAnswers(sliderId); // Retrieve the answers for the current sliderId
-            const tableBody = document.getElementById('score-table-body');
-            tableBody.innerHTML = ''; // Clear the existing rows
+        function updateScoreTable(scoreTable, sliderId) {
+            const answers = getAnswers(sliderId); 
+            const tableBody = scoreTable.querySelector('#score-table-body');
+            tableBody.innerHTML = ''; 
 
             answers.forEach((answer, index) => {
                 const row = document.createElement('tr');
@@ -72,37 +79,31 @@ const { sliderId } = Astro.props; // Get sliderId as a prop
                 tableBody.appendChild(row);
             });
 
-            // Calculate the score and percentage
             const score = getScore(sliderId);
             const totalQuestions = answers.length;
             const percentage = totalQuestions > 0 ? ((score / totalQuestions) * 100).toFixed(2) : 0;
 
-            const percentageDisplay = document.getElementById('percentage-display');
+            const percentageDisplay = scoreTable.querySelector('#percentage-display');
             percentageDisplay.textContent = `Percentage: ${percentage}%`;
         }
 
-        updateScoreTable();
-
-        const takeAgainBtn = document.getElementById('take-again-btn');
-        if (takeAgainBtn) {
-            takeAgainBtn.addEventListener('click', () => {
+        const takeAgainButtons = document.querySelectorAll('#take-again-btn');
+        takeAgainButtons.forEach((button) => {
+            button.addEventListener('click', () => {
                 window.location.reload();
             });
-        }
+        });
     });
 </script>
 
-
 <style>
 
-/* Basic styling for the score table */
 .score-table {
     margin: 20px;
     padding: 10px;
-    border: none; /* Remove any border */
+    border: none; 
 }
 
-/* Style for the percentage display */
 .percentage-display {
     margin: 10px 0;
     font-size: 18px;
@@ -110,43 +111,41 @@ const { sliderId } = Astro.props; // Get sliderId as a prop
     text-align: center;
 }
 
-/* Scrollable container */
+
 .scrollable-container {
     max-height: 450px; 
-    max-width: 500px;/* Set a fixed height for the scrollable area */
-    overflow-y: auto; /* Enable vertical scrolling */
+    max-width: 500px;
+    overflow-y: auto;
 }
 
-/* Style for the table */
+
 table {
     width: 100%;
     border-collapse: collapse;
-    border: none; /* Remove border from the table */
+    border: none; 
 }
 
 th, td {
-    padding: 10px 40px; /* Add padding for more space between columns */
+    padding: 10px 40px; 
     text-align: center;
 }
 
-/* Remove borders from the table header */
 th {
-    color: #333; /* Text color to contrast with the background */
-    border: none; /* Remove header cell borders */
+    color: #333; 
+    border: none; 
 }
 
-/* Remove borders from table cells */
+
 td {
     border: none;
 }
 
-/* Remove borders from table body and rows */
 tbody, tr {
     border: none;
 }
 
 .take-again-button {
-    margin-top: 40px; /* Increase the margin to lower the button */
+    margin-top: 40px;
     text-align: center;
 }
 

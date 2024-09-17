@@ -3,7 +3,6 @@ import DataDisplay from './DataDisplay.astro';
 import ScoreDisplay from './ScoreDisplay.astro';
 import ImageDisplay from './ImageDisplay.astro';
 
-// Utility function to shuffle an array
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -12,7 +11,6 @@ function shuffle(array) {
   return array;
 }
 
-// Accept 'dataGroupedByIndex' and 'sliderId' as props
 const { dataGroupedByIndex, sliderId } = Astro.props;
 const dataEntries = shuffle(Object.entries(dataGroupedByIndex));
 
@@ -45,33 +43,26 @@ const dataEntries = shuffle(Object.entries(dataGroupedByIndex));
         <p>No data available.</p>
     )}
 
-    <!-- Final Slide - Moved outside of the map loop -->
     <div class="carousel-container hidden" data-final-slide>
         <ScoreDisplay sliderId={sliderId} />
     </div>
 
-    <!-- Main Right Arrow for Next Set -->
     <button id="main-right-arrow" class="main-nav-arrow main-right-arrow" aria-label="Next set">&gt;</button>
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Function to initialize the carousel once the elements are available
 
         function initializeCarousel() {
-            // Select all species sliders using the data-slider-id attribute
+         
             const speciesSliders = document.querySelectorAll('[data-slider-id]');
             speciesSliders.forEach((speciesSlider) => {
-                console.log('speciesSlider:', speciesSlider.innerHTML);
-
-                // Scope elements within this speciesSlider
+             
+                const sliderId = speciesSlider.getAttribute('data-slider-id');
                 const carousels = speciesSlider.querySelectorAll('.carousel-container');
-                const mainLeftArrow = speciesSlider.querySelector('#main-left-arrow'); // Select by ID
-                const mainRightArrow = speciesSlider.querySelector('#main-right-arrow'); // Select by ID
-                let currentSetIndex = 0;
+                const mainLeftArrow = speciesSlider.querySelector('.main-left-arrow');
+                const mainRightArrow = speciesSlider.querySelector('.main-right-arrow');
 
-                console.log('Number of carousels found:', carousels.length);
-                console.log('mainLeftArrow:', mainLeftArrow);
-                console.log('mainRightArrow:', mainRightArrow);
+                let currentSetIndex = 0;
 
                 if (carousels.length > 0) {
                     showCarousel(currentSetIndex);
@@ -83,8 +74,6 @@ const dataEntries = shuffle(Object.entries(dataGroupedByIndex));
                     currentCarousel.classList.remove('hidden');
 
                     const isAnswered = currentCarousel.getAttribute('data-answered') === 'true';
-                    console.log(`Slide ${index + 1}: isAnswered = ${isAnswered}`);
-
                     const isFinalSlide = currentCarousel.hasAttribute('data-final-slide');
 
                     if (mainRightArrow) {
@@ -104,22 +93,10 @@ const dataEntries = shuffle(Object.entries(dataGroupedByIndex));
 
                 if (mainRightArrow) {
                     mainRightArrow.addEventListener('click', () => {
-                        console.log('Next button clicked');
                         const currentCarousel = carousels[currentSetIndex];
                         const isAnswered = currentCarousel.getAttribute('data-answered') === 'true';
-                        const shakeContainer = currentCarousel.querySelector('.shake-container');
-
-                        console.log('Shake container:', shakeContainer);
 
                         if (!isAnswered && !currentCarousel.hasAttribute('data-final-slide')) {
-                            if (shakeContainer) {
-                                shakeContainer.classList.remove('input-error');
-                                void shakeContainer.offsetWidth;
-                                shakeContainer.classList.add('input-error');
-                                console.log('Shake effect applied to shakeContainer');
-                            } else {
-                                console.error('Shake container not found.');
-                            }
                             return;
                         }
 
@@ -131,55 +108,51 @@ const dataEntries = shuffle(Object.entries(dataGroupedByIndex));
                             nextCarousel.setAttribute('data-answered', 'false');
                         }
                     });
-                } else {
-                    console.error('mainRightArrow not found.');
                 }
 
-                document.addEventListener('answersUpdated', () => {
-                    const carousel = carousels[currentSetIndex];
-                    if (carousel) {
-                        carousel.setAttribute('data-answered', 'true');
-                        showCarousel(currentSetIndex);
+                document.addEventListener('answersUpdated', (event) => {
+                    if (event.detail.sliderId === sliderId) {
+                        const carousel = carousels[currentSetIndex];
+                        if (carousel) {
+                            carousel.setAttribute('data-answered', 'true');
+                            showCarousel(currentSetIndex);
+                        }
                     }
                 });
             });
         }
 
-        // Use MutationObserver to detect when the .carousel-container elements are added to the DOM
         const observer = new MutationObserver((mutationsList, observer) => {
             const carousels = document.querySelectorAll('.carousel-container');
             if (carousels.length > 0) {
-                // Once the elements are found, initialize the carousel and stop observing
+           
                 initializeCarousel();
                 observer.disconnect();
             }
         });
 
-        // Start observing the document body for changes
         observer.observe(document.body, { childList: true, subtree: true });
     });
 </script>
 
 
-
 <style>
     
  
-/* Styles for the carousel and arrows */
 #carousel-wrapper {
-    position: relative; /* This makes #carousel-wrapper the reference for absolutely positioned children */
-    width: 100%; /* Set a fixed width to the wrapper to control the arrow positioning */
-    max-width: 800px; /* Optional: Set a max-width to prevent overflow */
-    margin: 0 auto; /* Center the container horizontally */
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
     height: 500px
 }
 
 #carousel-wrapper {
-    position: relative; /* This makes #carousel-wrapper the reference for absolutely positioned children */
+    position: relative; 
     width: 100%;
     max-width: 800px;
     margin: 0 auto;
-    height: 500px; /* Fixed height to anchor the arrows' positions */
+    height: 500px;
 }
 
 .carousel-container {
@@ -200,17 +173,17 @@ const dataEntries = shuffle(Object.entries(dataGroupedByIndex));
     align-items: center;
     cursor: pointer;
     z-index: 10;
-    position: absolute; /* Use absolute positioning */
-    top: 50%; /* Center vertically */
-    transform: translateY(-50%); /* Offset vertically by 50% of the button's height */
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .main-left-arrow {
-    left: -75px; /* Position from the left edge of the container */
+    left: -75px;
 }
 
 .main-right-arrow {
-    right: -75px; /* Position from the right edge of the container */
+    right: -75px; 
 }
 
 .main-nav-arrow:hover {
@@ -220,31 +193,6 @@ const dataEntries = shuffle(Object.entries(dataGroupedByIndex));
 .hidden {
     display: none;
 }
-
-@keyframes fadeBorder {
-  0% {
-    border-color: red;
-  }
-  100% {
-    border-color: #ccc; /* Original border color */
-  }
-}
-
-@keyframes shake {
-  0%, 100% {
-    transform: translateX(0);
-  }
-  25% {
-    transform: translateX(-5px);
-  }
-  50% {
-    transform: translateX(5px);
-  }
-  75% {
-    transform: translateX(-5px);
-  }
-}
-
 
 </style>
       
