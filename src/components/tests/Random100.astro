@@ -2,28 +2,48 @@
 import { speciesData } from '../../utils/SpeciesData.js';
 import Slider from '../Slider.astro';
 
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
-
+// Server-side: Collect the species data, but don't shuffle
 const allSpeciesArray = [
   ...Object.values(speciesData.fish),
   ...Object.values(speciesData.invert),
   ...Object.values(speciesData.limu),
 ];
-
-const selectedSpeciesArray = shuffle(allSpeciesArray).slice(0, 100);
-const randomSpeciesDataGroupedByIndex = {};
-selectedSpeciesArray.forEach((item, index) => {
-  randomSpeciesDataGroupedByIndex[index] = item;
-});
-
 ---
 
-<div>
-  <Slider dataGroupedByIndex={randomSpeciesDataGroupedByIndex} sliderId="random-100" />
+<div id="species-slider-wrapper">
+  <Slider dataGroupedByIndex={allSpeciesArray} sliderId="random-100" />
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // Inject the server-side unshuffled data into the client-side as JSON
+    const speciesData = JSON.parse(`<?= JSON.stringify(${JSON.stringify(allSpeciesArray)}) ?>`);
+
+    // Shuffle the data on the client side
+    const shuffledSpeciesData = shuffle(speciesData).slice(0, 100); // Take 100 random species
+
+    // Group the shuffled data by index
+    const randomSpeciesDataGroupedByIndex = {};
+    shuffledSpeciesData.forEach((item, index) => {
+      randomSpeciesDataGroupedByIndex[index] = item;
+    });
+
+    // Now initialize the slider with the shuffled data
+    initializeSlider(randomSpeciesDataGroupedByIndex);
+
+    function initializeSlider(data) {
+      const slider = document.querySelector('[data-slider-id="random-100"]');
+      // Assuming your Slider.astro component can dynamically handle this data
+      // Initialize or update the slider with shuffled species data
+      slider.setData(data);
+    }
+  });
+</script>
