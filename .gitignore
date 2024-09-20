@@ -3,3 +3,5 @@ node_modules/
 dist/
 .env
 npm-debug.log 
+# Local Netlify folder
+.netlify

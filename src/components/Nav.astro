@@ -1,5 +1,13 @@
 ---
-const links = [
+const studyGuideLinks = [
+  { id: 'catalog', label: 'Species Catalog', path: '#catalog' },
+  { id: 'taxonomy', label: 'Taxonomy Overview', path: '#taxonomy' },
+  { id: 'anatomy', label: 'Marine Anatomy', path: '#anatomy' },
+  { id: 'evolution-limu', label: 'Evolution of Limu', path: '#evolution-limu' },
+  { id: 'resources', label: 'Other Resources', path: 'http://uhhmop.hawaii.edu/quest/species.shtml' }
+];
+
+const practiceExamLinks = [
   { id: 'fish', label: 'Fishes', path: '#fish' },
   { id: 'invert', label: 'Invertebrates', path: '#invert' },
   { id: 'limu', label: 'Limu', path: '#limu' },
@@ -7,19 +15,21 @@ const links = [
   { id: 'random-100', label: 'Random 100', path: '#random-100' }
 ];
 
-const { activeSection, onNavClick } = Astro.props;
+const { navType } = Astro.props;
+
+const links = navType === 'study' ? studyGuideLinks : practiceExamLinks;
+const title = navType === 'study' ? 'Study Guides' : 'Practice Exams';
 ---
 
 <div class="nav-container">
-  <h2>Practice Exams</h2>
+  <h2>{title}</h2>
   <ul>
     {links.map(link => (
       <li key={link.id}>
         <a 
           href={link.path} 
-          data-section={link.id} 
-          onClick={(e) => onNavClick(e, link.id)} 
-          class={activeSection === link.id ? 'active' : ''}
+          target={link.path.startsWith('http') ? '_blank' : '_self'} 
+          class=""
         >
           {link.label}
         </a>
@@ -27,60 +37,3 @@ const { activeSection, onNavClick } = Astro.props;
     ))}
   </ul>
 </div>
-
-<style>
-
-.nav-container {
-  position: fixed;
-  top: 30%;
-  left: 15%;
-  width: 220px;
-  padding: 20px;
-  background-color: rgba(0, 0, 128, 0.5);
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
-
-.nav-container h2 {
-  color: white;
-  font-size: 18px;
-  text-align: center;
-  margin-bottom: 15px;
-  font-weight: bold;
-}
-
-.nav-container ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  text-align: center;
-}
-
-.nav-container ul li {
-  margin: 10px 0;
-}
-
-.nav-container ul li a {
-  color: white;
-  text-decoration: none;
-  font-size: 16px;
-  padding: 5px;
-  display: inline-block; 
-  transition: color 0.3s, transform 0.3s, font-weight 0.3s;
-}
-
-.nav-container ul li a:hover {
-  font-weight: bold; 
-  transform: translateY(-5px); 
-}
-
-.nav-container ul li a.active {
-  color: #000; 
-  font-weight: bold; 
-  border-radius: 5px; 
-  padding: 5px 10px; 
-}
-
-
-
-</style>

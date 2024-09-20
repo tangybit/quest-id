@@ -1,6 +1,8 @@
 ---
 import '../styles/global.css';
 import Nav from './Nav.astro';
+import StudySection from './StudySection.astro';
+import Placeholder from './Placeholder.astro';
 import Fish from './tests/Fish.astro';
 import Invert from './tests/Invert.astro';
 import Limu from './tests/Limu.astro';
@@ -16,70 +18,260 @@ import Random100 from './tests/AllSpecies.astro';
   <link rel="stylesheet" href="">
 </head>
 <body>
-  <div class="logo-container">
-    <img src="/mop-logo.png" alt="Logo" class="logo" />
-  </div>
-
-  <Nav />
 
   <video autoplay muted loop id="background-video">
     <source src="/video/background.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
-
-  <div class="test-container">
-    <div class="test-content">
-
-      <div id="fish" class="content-section">
-        <Fish />
-      </div>
-
-      <div id="invert" class="content-section hidden">
-        <Invert />
-      </div>
-
-
-      <div id="limu" class="content-section hidden">
-        <Limu />
-      </div>
-
-      <div id="all" class="content-section hidden">
-        <AllSpecies />
-      </div>
-
-      <div id="random-100" class="content-section hidden">
-        <Random100 />
-      </div>
-
-
+  
+  <div class="header-container">
+    <div class="logo-container">
+      <img src="/mop-logo.png" alt="Logo" class="logo" />
     </div>
+    
+    <img src="/fish-menu.png" alt="Fish Icon" class="icon" />
   </div>
 
-  <script>
+<div id="menu-overlay" class="overlay hidden">
+  <img id="close-menu" src="/sea-star.png" alt="Close Button" class="close-btn" />
 
-    function updateContentVisibility() {
-      const hash = window.location.hash.replace('#', '') || 'fish';
+  <div class="overlay-content">
 
-      document.querySelectorAll('.content-section').forEach(section => {
-        section.classList.add('hidden');
-      });
+    <img src="/mop-logo.png" alt="MOP Logo" class="overlay-logo" />
+    <h2>PRACTICE EXAMS</h2>
+    <ul class="practice-exams">
+      <li><a href="#fish">Fishes</a></li>
+      <li><a href="#invert">Invertebrates</a></li>
+      <li><a href="#limu">Limu</a></li>
+      <li><a href="#all">All Species</a></li>
+      <li><a href="#random-100">Random 100</a></li>
+    </ul>
 
-      const activeSection = document.getElementById(hash);
-      if (activeSection) {
-        activeSection.classList.remove('hidden');
+    <h2>STUDY GUIDES</h2>
+    <ul class="study-guides">
+      <li><a href="#catalog">Species Catalog</a></li>
+      <li><a href="#taxonomy">Taxonomy Overview</a></li>
+      <li><a href="#anatomy">Marine Anatomy</a></li>
+      <li><a href="#evolution-limu">Evolution of Limu</a></li>
+      <li><a href="http://uhhmop.hawaii.edu/quest/species.shtml" target="_blank">Other Resources</a></li>
+    </ul>
+  </div>
+</div>
+
+
+
+    <div class="main-container">
+    <div class="nav-wrapper left-nav">
+      <div class="nav-container" id="left-nav-container">
+        <Nav navType="exam" />
+      </div>
+    </div>
+
+    <div class="test-container">
+      <div class="test-content">
+
+        <div id="fish" class="content-section">
+          <Fish />
+        </div>
+
+        <div id="invert" class="content-section">
+          <Invert />
+        </div>
+
+        <div id="limu" class="content-section">
+          <Limu />
+        </div>
+
+        <div id="all" class="content-section">
+          <AllSpecies />
+        </div>
+
+        <div id="random-100" class="content-section">
+          <Random100 />
+        </div>
+
+        <div id="catalog" class="content-section">
+          <StudySection />
+        </div>
+
+        <div id="taxonomy" class="content-section">
+          <Placeholder />
+        </div>
+
+        <div id="anatomy" class="content-section">
+          <Placeholder />
+        </div>
+
+        <div id="evolution-limu" class="content-section">
+          <StudySection />
+        </div>
+
+        <div id="resources" class="content-section">
+        </div>
+
+      </div>
+    </div>
+   
+<div class="nav-wrapper right-nav">
+  <div class="nav-container" id="right-nav-container">
+    <Nav navType="study" />
+  </div>
+</div>
+
+<script>
+  let activeSectionId = 'fish';
+  let isMenuOpen = false;
+  
+  function updateContentVisibility() {
+    const hash = window.location.hash.replace('#', '') || 'fish';
+    activeSectionId = hash;
+  
+    document.querySelectorAll('.content-section').forEach(section => {
+      section.classList.add('hidden');
+    });
+  
+    const activeSection = document.getElementById(hash);
+    if (activeSection) {
+      activeSection.classList.remove('hidden');
+    }
+  
+    updateNavActiveSection();
+  }
+
+  function updateNavActiveSection() {
+    document.querySelectorAll('a[data-section]').forEach(link => {
+      if (link.getAttribute('data-section') === activeSectionId) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
       }
+    });
+  }
+ 
+
+  function toggleMenu() {
+    const overlay = document.getElementById('menu-overlay');
+    
+    if (isMenuOpen) {
+      overlay.classList.remove('slide-in');
+      overlay.classList.add('slide-out');
+      setTimeout(() => {
+        overlay.style.display = 'none';
+      }, 500);
+    } else {
+      overlay.style.display = 'block';
+      setTimeout(() => {
+        overlay.classList.remove('slide-out');
+        overlay.classList.add('slide-in');
+      }, 10); 
     }
 
+    isMenuOpen = !isMenuOpen;
+  }
 
-    window.addEventListener('hashchange', updateContentVisibility);
-
-    document.addEventListener('DOMContentLoaded', updateContentVisibility);
-  </script>
-
-  <style>
-    .hidden {
-      display: none;
+  document.addEventListener('DOMContentLoaded', () => {
+    updateContentVisibility();
+  
+    const menuIcon = document.querySelector('.icon');
+    const closeButton = document.getElementById('close-menu');
+    
+    if (menuIcon) {
+      menuIcon.addEventListener('click', toggleMenu);
     }
+
+    if (closeButton) {
+      closeButton.addEventListener('click', toggleMenu);
+    }
+  });
+
+  window.addEventListener('hashchange', updateContentVisibility);
+</script>
+
+
+<style>
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 128, 0.8);
+  z-index: 1001;
+  display: none;
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+
+.slide-in {
+  transform: translateX(0);
+  display: block;
+}
+
+.slide-out {
+  transform: translateX(-100%);
+}
+
+.icon {
+  z-index: 999;
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 75px;
+  height: 70px;
+  cursor: pointer;
+}
+
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.overlay-content {
+  text-align: center;
+  color: white;
+  padding: 20px;
+}
+
+.overlay-content h2 {
+  font-size: 1.5rem;
+  margin-top: 20px;
+  text-transform: uppercase;
+  color: lightgray;
+}
+
+.overlay-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+}
+
+.overlay-content li {
+  margin: 10px 0;
+}
+
+.overlay-content a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.2rem;
+  transition: color 0.3s;
+}
+
+.overlay-content a:hover {
+  color: lightgray;
+}
+
+.overlay-logo {
+  width: 100px; 
+  height: auto;
+  display: block;
+  margin: 0 auto 20px auto; 
+}
   </style>
 </body>
 </html>

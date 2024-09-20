@@ -1,61 +1,60 @@
 index,scientific name,common name
-1,Lyngbya majuscula,mermaids hair
+1,Lyngbya majuscula,mermaids' hair
 2,Symploca hydnoides,brush seaweed
-3,Halophila sp.,seagrass
-4,Halophila spp.,spoon seagrass
-5,Ulva lactuca,sea lettuce (palahalaha)
-6,Ulva prolifera ,branched sea lettuce
-7,Cladophora sericea,limu 'ele'ele or huna
-8,Bryopsis sp.,sea fern
-9,Codium arabicum,green sea cushion
-10,Codium edule ,wāwae'iole (rat's foot)
-11,Codium reediae,limu a'ala'ula
-12,Caulerpa racemosa,sea grapes
-13,Caulerpa serrulata,serrated green seaweed
-14,Caulerpa sertularioides,green feather algae
-15,Caulerpa taxifolia,killer algae
-16,Halimeda kanaloana,Money Plant
-17,Halimeda discoidea,Money Plant
-18,Halimeda opuntia,limu pāhe'e
-19,Avrainvillea lacerata,leather mudweed
-20,Avrainvillea erecta,leaf alga
-21,Neomeris annulata,fern codium macro algae
-22,Dictyosphaeria cavernosa,green bubble algae
-23,Dictyosphaeria versluysii,button weed
-24,Microdictyon sp.,mesh algae
-25,Valonia ventricosa,sailor's eyeball alga
-26,Dictyota sp.,forked seaweed
-27,Dictyopteris sp.,brown algae
-28,Lobophora obscura,brown seaweed
-29,Padina sp. ,peacock's tail
-30,Stypopodium flabelliforme,limu kala
-31,Sargassum aquifolium,limu kala
-32,Sargassum obtusifolium,limu kala
-33,Sargassum polyphyllum,limu kala
-34,Turbinaria ornata,crowded sea bell
-35,Colpomenia sinuosa,the oyster thief
-36,Hydroclathrus clathratus,brown algae
-37,Liagora sp.,spaghetti weed
-38,Trichogloea sp.,ribbon algae
-39,Dichotomaria marginata,limu pālahalah
-40,Asparagopsis taxiformis,red sea plume
-41,Gibsmithia hawaiiensis,baggy seaweed
-42,Predaea weldii,Welder's Thistle
-43,Portieria hornemannii,red algae
-44,Halymenia sp. ,dragon's tongue
-45,Hypnea caraibica ,hypnea algae
-46,Gymnogongrus durvillei,red seaweed
-47,Grateloupia filicina,red feather algae
-48,Acanthophora,limu 'aki'aki
-49,Gracilaria salicornia,limu manauea (ogo)
-50,"Gracilaria coronopifolia,limu manauea
-51,Laurencia spp.,limu līpoa
-52,Dasya iridescens,iridescent seaweed
-53,Amansia glomerata,feather alga
-54,Martensia spp.,net seaweed
-55,Pterocladiella sp.,agar seaweed
-56,Tolypiocladia glomerulata,red turf algae
-57,Crustose Coralline Algae ,crustose coralline algae
-58,Articulated Coralline Algae,articulated coralline algae
-59,Peyssonneliales,crustose red algae
-60,Turf assemblages,turf algae
+3,Halophila sp.,spoon seagrass
+4,Ulva lactuca,sea lettuce (palahalaha)
+5,Ulva prolifera ,branched sea lettuce
+6,Cladophora sericea,Limu 'Ele'ele or Huna
+7,Bryopsis sp.,sea fern
+8,Codium arabicum,green sea cushion
+9,Codium edule ,Wāwae'iole (rat's foot)
+10,Codium reediae,Limu A'ala'ula
+11,Caulerpa racemosa,sea grapes
+12,Caulerpa serrulata,serrated green seaweed
+13,Caulerpa sertularioides,green feather algae
+14,Caulerpa taxifolia,killer algae
+15,Halimeda kanaloana,Money Plant
+16,Halimeda discoidea,Money Plant
+17,Halimeda opuntia,Limu Pāhe'e
+18,Avrainvillea lacerata,leather mudweed
+19,Avrainvillea erecta,leaf alga
+20,Neomeris annulata,fern codium macro algae
+21,Dictyosphaeria cavernosa,green bubble algae
+22,Dictyosphaeria versluysii,button weed
+23,Microdictyon sp.,mesh algae
+24,Valonia ventricosa,sailor's eyeball alga
+25,Dictyota sp.,forked seaweed
+26,Dictyopteris sp.,brown algae
+27,Lobophora obscura,brown seaweed
+28,Padina sp. ,white scroll alga
+29,Stypopodium flabelliforme,Limu Kala
+30,Sargassum aquifolium,Limu Kala
+31,Sargassum obtusifolium,Limu Kala
+32,Sargassum polyphyllum,Limu Kala
+33,Turbinaria ornata,crowded sea bell
+34,Colpomenia sinuosa,the oyster thief
+35,Hydroclathrus clathratus ,brown algae
+36,Liagora sp.,spaghetti weed
+37,Trichogloea sp.,ribbon algae
+38,Dichotomaria marginata,Limu Pālahalah
+39,Asparagopsis taxiformis,red sea plume
+40,Gibsmithia hawaiiensis,baggy seaweed
+41,Predaea weldii,Welder's Thistle
+42,Portieria hornemannii,red algae
+43,Halymenia sp. ,dragon's tongue
+44,Hypnea caraibica (formerly H. musciformis),hypnea algae
+45,Gymnogongrus durvillei,Limu 'Aki'aki
+46,Grateloupia filicina,red feather algae
+47,Acanthophora spicifera,prickly seaweed
+48,Gracilaria salicornia,Limu Manauea (ogo)
+49,Gracilaria coronopifolia,Limu Manauea
+50,Laurencia spp.,Limu Līpoa
+51,Dasya iridescens,iridescent seaweed
+52,Amansia glomerata,conglomerate seaweed
+53,Martensia spp.,net seaweed
+54,Pterocladiella sp.,agar seaweed
+55,Tolypiocladia glomerulata,red turf algae
+56,Crustose Coralline Algae ,crustose coralline algae
+57,Articulated Coralline Algae,articulated coralline algae
+58,Peyssonneliales,crustose red algae
+59,Turf assemblages,turf algae

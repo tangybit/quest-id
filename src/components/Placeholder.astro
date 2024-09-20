@@ -1,0 +1,62 @@
+---
+
+---
+
+<style>
+    .center-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 80vh;
+      background-color: rgba(173, 216, 230, 0.5); 
+    }
+
+    h2 {
+      font-size: 2rem;
+      color: #333;
+      font-weight: bold;
+      margin: 0;
+      opacity: 0; 
+      transform: scale(0.8);
+      animation: fadeInAndGrow 1.5s ease forwards;
+      text-align: center;
+    }
+
+    h3 {
+      font-size: 1.5rem; 
+      color: #555; 
+      font-weight: normal;
+      margin-top: 10px;
+      opacity: 0;
+      transform: scale(0.8);
+      animation: fadeInAndGrow 1.5s ease forwards;
+      animation-delay: 2s;
+      text-align: center;
+    }
+
+    a {
+      color: #1E90FF;
+      text-decoration: none;
+      font-size: 1.2rem;
+      display: inline-block;
+      margin-top: 10px;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    @keyframes fadeInAndGrow {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+</style>
+  
+<div class="center-container">
+    <div>
+        <h2>Help us build this page!</h2>
+        <a href="https://docs.google.com/spreadsheets/d/1nh0dSjTIO02CpyuIbGYIt88TRcSf1RZj1vSFPf5fYTM/edit?usp=sharing" target="_blank">Sign up here.</a>
+    </div>
+</div>
