@@ -38,7 +38,7 @@ const { sliderId } = Astro.props;
 </div>
 
 <script>
-    import { getAnswers, getScore } from '../utils/checkAnswer.js';
+    import { getAnswers, getScore , getSkippedQuestions} from '../utils/checkAnswer.js';
 
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -62,30 +62,44 @@ const { sliderId } = Astro.props;
 
             updateScoreTable(scoreTable, sliderId);
         });
-
         function updateScoreTable(scoreTable, sliderId) {
-            const answers = getAnswers(sliderId); 
-            const tableBody = scoreTable.querySelector('#score-table-body');
-            tableBody.innerHTML = ''; 
+    const answers = getAnswers(sliderId); // Get all answers (answered and skipped)
+    const tableBody = scoreTable.querySelector('#score-table-body');
+    tableBody.innerHTML = ''; 
 
-            answers.forEach((answer, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${answer.userInput}</td>
-                    <td>${answer.correctAnswer}</td>
-                    <td>${answer.isCorrect ? '✅' : '❌'}</td>
-                `;
-                tableBody.appendChild(row);
-            });
+    let score = 0; // Initialize the score
+    let totalQuestions = answers.length; // Total number of questions
 
-            const score = getScore(sliderId);
-            const totalQuestions = answers.length;
-            const percentage = totalQuestions > 0 ? ((score / totalQuestions) * 100).toFixed(2) : 0;
+    answers.forEach((answer, index) => {
+        const row = document.createElement('tr');
 
-            const percentageDisplay = scoreTable.querySelector('#percentage-display');
-            percentageDisplay.textContent = `Percentage: ${percentage}%`;
+        // If the question is not skipped and answered correctly, increment the score
+        if (answer.answered && answer.isCorrect) {
+            score++;
         }
+
+        // Leave userInput empty if the question is skipped
+        const userInputDisplay = answer.answered ? answer.userInput : '';
+
+        // Populate the table row
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${userInputDisplay}</td>
+            <td>${answer.correctAnswer || 'N/A'}</td>
+            <td>${answer.status === 'skipped' ? '⏭️' : (answer.isCorrect ? '✅' : '❌')}</td>
+        `;
+        tableBody.appendChild(row);
+    });
+
+    // Calculate the percentage score
+    const percentage = totalQuestions > 0 ? ((score / totalQuestions) * 100).toFixed(2) : 0;
+
+    // Update the percentage display
+    const percentageDisplay = scoreTable.querySelector('#percentage-display');
+    percentageDisplay.textContent = `Percentage: ${percentage}%`;
+}
+
+
 
         const takeAgainButtons = document.querySelectorAll('#take-again-btn');
         takeAgainButtons.forEach((button) => {
@@ -100,6 +114,7 @@ const { sliderId } = Astro.props;
 
 .score-table {
     margin: 20px;
+    min-height: 800px;
     padding: 10px;
     border: none; 
 }

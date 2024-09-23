@@ -2,36 +2,26 @@
 import { speciesData } from '../../utils/SpeciesData.js';
 import Slider from '../Slider.astro';
 
-const allSpeciesArray = [
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+const allSpeciesArray = shuffle([
   ...Object.values(speciesData.fish),
   ...Object.values(speciesData.invert),
   ...Object.values(speciesData.limu),
-];
+]);
+
+const allSpeciesDataGroupedByIndex = {};
+allSpeciesArray.forEach((item, index) => {
+  allSpeciesDataGroupedByIndex[index] = item;
+});
 ---
 
-<div id="species-slider-wrapper">
-  <Slider dataGroupedByIndex={allSpeciesArray} sliderId="all-species" />
+<div>
+  <Slider dataGroupedByIndex={allSpeciesDataGroupedByIndex} sliderId="all-species" />
 </div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    function shuffle(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-      return array;
-    }
-
-    const speciesData = JSON.parse(`<?= JSON.stringify(${JSON.stringify(allSpeciesArray)}) ?>`);
-    const shuffledSpeciesData = shuffle(speciesData);
-
-    initializeSlider(shuffledSpeciesData);
-
-    function initializeSlider(data) {
-      const slider = document.querySelector('[data-slider-id="all-species"]');
-
-      slider.setData(data);
-    }
-  });
-</script>

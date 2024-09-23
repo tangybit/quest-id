@@ -1,14 +1,15 @@
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
+import netlify from '@astrojs/netlify';
 
 export default defineConfig({
-  site: 'https://dotkine.com',
+  site: 'https:mop-quest-id.netlify.app', 
   integrations: [
-    tailwind(),
+    tailwind(), 
   ],
-  output: 'static',  // Default is static site generation; can be customized
+  adapter: netlify(),
   build: {
-    dist: 'dist',  // Default output directory
+    dist: 'dist',
     vite: {},
   },
 });

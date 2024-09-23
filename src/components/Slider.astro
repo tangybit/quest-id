@@ -2,20 +2,32 @@
 import DataDisplay from './DataDisplay.astro'; 
 import ScoreDisplay from './ScoreDisplay.astro';
 import ImageDisplay from './ImageDisplay.astro';
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
 const { dataGroupedByIndex, sliderId } = Astro.props;
-const dataEntries = Object.entries(dataGroupedByIndex);
+const dataEntries = shuffle(Object.entries(dataGroupedByIndex));
 
 ---
 
 <div id="carousel-wrapper" data-slider-id={sliderId}>
  
-    <button id="main-left-arrow" class="main-nav-arrow main-left-arrow" aria-label="Previous set">&lt;</button>
+     <!-- Left navigation button -->
+     <button class="btn main-left-arrow" aria-label="Previous set">
+        <span class="button-icon">&lt;</span>
+      </button>
 
     {dataEntries.length ? (
         dataEntries.map(([index, dataList], slidePosition) => {
             return (
                 <div 
-                    class="carousel-container hidden" 
+                    class={`carousel-container ${slidePosition === 0 ? 'active' : 'hidden'}`} 
                     key={index} 
                     data-index={index}
                     data-slide-position={slidePosition}
@@ -38,192 +50,214 @@ const dataEntries = Object.entries(dataGroupedByIndex);
         <ScoreDisplay sliderId={sliderId} />
     </div>
 
-    <button id="main-right-arrow" class="main-nav-arrow main-right-arrow" aria-label="Next set">&gt;</button>
+     <button class="btn main-right-arrow" aria-label="Next set">
+        <span class="button-icon">&gt;</span>
+      </button>
 </div>
+
 <script>
+
     document.addEventListener('DOMContentLoaded', () => {
-
-        function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
+        const speciesSliders = document.querySelectorAll('#carousel-wrapper[data-slider-id]');
+    
+        speciesSliders.forEach((speciesSlider) => {
+            const sliderId = speciesSlider.getAttribute('data-slider-id');
+            const carousels = speciesSlider.querySelectorAll('.carousel-container');
+            const mainLeftArrow = speciesSlider.querySelector('.main-left-arrow');
+            const mainRightArrow = speciesSlider.querySelector('.main-right-arrow');
+    
+            let currentSetIndex = 0;
+            let skippedSlides = [];
+            let skippedSlidesMode = false;
+            let currentSkippedIndex = 0;
+            let carousel2Skipped = false;
+    
+            console.log(`Initialized slider with ID: ${sliderId}`);
+            console.log(`Total number of slides: ${carousels.length}`);
+            console.log(`Current Set Index initialized to: ${currentSetIndex}`);
+    
+            if (carousels.length > 0) {
+                showCarousel(currentSetIndex);
             }
-            return array;
-        }
-
-        function initializeCarousel() {
-            const speciesSliders = document.querySelectorAll('[data-slider-id]');
-            speciesSliders.forEach((speciesSlider) => {
-                const sliderId = speciesSlider.getAttribute('data-slider-id');
-                const carousels = [...speciesSlider.querySelectorAll('.carousel-container')];
-                const shuffledCarousels = shuffle(carousels);
-
-                const mainLeftArrow = speciesSlider.querySelector('.main-left-arrow');
-                const mainRightArrow = speciesSlider.querySelector('.main-right-arrow');
-
-                let currentSetIndex = 0;
-
-                if (shuffledCarousels.length > 0) {
-                    showCarousel(currentSetIndex, shuffledCarousels);
-                }
-
-                function showCarousel(index, carouselsArray) {
-                    carouselsArray.forEach((carousel) => carousel.classList.add('hidden'));
-                    const currentCarousel = carouselsArray[index];
-                    currentCarousel.classList.remove('hidden');
-
-                    const isAnswered = currentCarousel.getAttribute('data-answered') === 'true';
-                    const isFinalSlide = currentCarousel.hasAttribute('data-final-slide');
-
-                    if (mainRightArrow) {
-                        mainRightArrow.disabled = isFinalSlide || !isAnswered;
-                    }
-                    if (mainLeftArrow) {
-                        mainLeftArrow.disabled = index === 0;
+    
+            function processSkippedSlides() {
+                console.log("Processing skipped slides...");
+                if (skippedSlidesMode && skippedSlides.length > 0) {
+                    console.log(`There are ${skippedSlides.length} skipped slides, currentSkippedIndex is ${currentSkippedIndex}`);
+                    if (currentSkippedIndex < skippedSlides.length) {
+                        currentSetIndex = skippedSlides[currentSkippedIndex];
+                        console.log(`Showing skipped slide at index: ${currentSetIndex}`);
+                        showCarousel(currentSetIndex);
+                        currentSkippedIndex++;
+                    } else {
+                        console.log("Finished showing skipped slides. Proceeding to final slide.");
+                        skippedSlidesMode = false;
+                        currentSetIndex = carousels.length - 1;
+                        showCarousel(currentSetIndex);
                     }
                 }
-
-                if (mainLeftArrow) {
-                    mainLeftArrow.addEventListener('click', () => {
-                        currentSetIndex = (currentSetIndex - 1 + shuffledCarousels.length) % shuffledCarousels.length;
-                        showCarousel(currentSetIndex, shuffledCarousels);
-                    });
-                }
-
-                if (mainRightArrow) {
-                    mainRightArrow.addEventListener('click', () => {
-                        const currentCarousel = shuffledCarousels[currentSetIndex];
-                        const isAnswered = currentCarousel.getAttribute('data-answered') === 'true';
-
-                        if (!isAnswered && !currentCarousel.hasAttribute('data-final-slide')) {
-                            return;
-                        }
-
-                        currentSetIndex = (currentSetIndex + 1) % shuffledCarousels.length;
-                        showCarousel(currentSetIndex, shuffledCarousels);
-
-                        const nextCarousel = shuffledCarousels[currentSetIndex];
-                        if (nextCarousel.getAttribute('data-answered') !== 'true') {
-                            nextCarousel.setAttribute('data-answered', 'false');
-                        }
-                    });
-                }
-
-                document.addEventListener('answersUpdated', (event) => {
-                    if (event.detail.sliderId === sliderId) {
-                        const carousel = shuffledCarousels[currentSetIndex];
-                        if (carousel) {
-                            carousel.setAttribute('data-answered', 'true');
-                            showCarousel(currentSetIndex, shuffledCarousels);
-                        }
+            }
+    
+            function showCarousel(index) {
+                console.log(`Showing carousel at index: ${index}`);
+                carousels.forEach((carousel, i) => {
+                    if (i === index) {
+                        console.log(`Activating slide ${i}`);
+                        carousel.classList.remove('hidden');
+                        carousel.classList.add('active');
+                    } else {
+                        carousel.classList.remove('active');
+                        carousel.classList.add('hidden');
                     }
                 });
-            });
-        }
-
-        const observer = new MutationObserver((mutationsList, observer) => {
-            const carousels = document.querySelectorAll('.carousel-container');
-            if (carousels.length > 0) {
-                initializeCarousel();
-                observer.disconnect();
+    
+                if (mainLeftArrow) {
+                    mainLeftArrow.disabled = index === 0;
+                }
+    
+                if (mainRightArrow) {
+                    const isFinalSlide = carousels[index].hasAttribute('data-final-slide');
+                    mainRightArrow.disabled = isFinalSlide || index === carousels.length - 1;
+                }
             }
-        });
+    
+            if (mainLeftArrow) {
+                mainLeftArrow.addEventListener('click', () => {
+                    console.log(`Left arrow clicked. Current Slide Index: ${currentSetIndex}`);
+                    currentSetIndex = Math.max(0, currentSetIndex - 1);
+                    console.log(`Current Slide Index after decrement: ${currentSetIndex}`);
+                    showCarousel(currentSetIndex);
+                });
+            } else {
+                console.warn(`Left arrow not found for group ${sliderId}`);
+            }
+            if (mainRightArrow) {
+                mainRightArrow.addEventListener('click', () => {
+                    console.log(`Right arrow clicked. Current Slide Index: ${currentSetIndex}`);
+    
+                    const isAnswered = carousels[currentSetIndex].getAttribute('data-answered') === 'true';
+                    if (!isAnswered && !carousels[currentSetIndex].hasAttribute('data-final-slide')) {
+                        return; // Prevent advancing if the current question is not answered
+                    }
+    
+                    if (currentSetIndex === carousels.length - 2) {
+                        console.log("On second-to-last slide (carousel - 2)");
+    
+                        if (skippedSlides.length > 0) {
+                            if (!carousel2Skipped) {
+                                console.log("Carousel - 2 was answered. Entering skip mode to process skipped slides.");
+                                skippedSlidesMode = true;
+                                processSkippedSlides();
+                            } else {
+                                console.log("Carousel - 2 was skipped. Entering skipped slides mode.");
+                                skippedSlidesMode = true;
+                                processSkippedSlides();
+                            }
+                        } else {
 
-        observer.observe(document.body, { childList: true, subtree: true });
+                            console.log("No skipped slides exist. Proceeding to the final slide.");
+                            currentSetIndex = Math.min(carousels.length - 1, currentSetIndex + 1);
+                            showCarousel(currentSetIndex);
+                        }
+                    } else if (skippedSlidesMode) {
+                        console.log("Skipped slides mode is active.");
+                        processSkippedSlides();
+                    } else {
+                        console.log("Proceeding normally.");
+                        currentSetIndex = Math.min(carousels.length - 1, currentSetIndex + 1);
+                        showCarousel(currentSetIndex);
+                    }
+                });
+            } else {
+                console.warn(`Right arrow not found for group ${sliderId}`);
+            }
+    
+            document.addEventListener('skipped', (event) => {
+                console.log("Skip button pressed");
+    
+                const carousel = carousels[currentSetIndex];
+                carousel.setAttribute('data-skipped', 'true');
+    
+                if (!skippedSlides.includes(currentSetIndex)) {
+                    skippedSlides.push(currentSetIndex); 
+                    console.log(`Skipped slides array updated:`, skippedSlides);
+                }
+
+                if (currentSetIndex === carousels.length - 2) {
+                    carousel2Skipped = true;
+                    console.log("Marked carousel - 2 as skipped.");
+                }
+            });
+    
+            document.addEventListener('answersUpdated', (event) => {
+                if (event.detail.sliderId === sliderId) {
+                    const carousel = carousels[currentSetIndex];
+                    if (carousel) {
+                        carousel.setAttribute('data-answered', 'true');
+                        showCarousel(currentSetIndex);
+                    }
+                }
+            });
+        });
     });
 </script>
+    
+    
 
 
 <style>
+    
+ 
+#carousel-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    height: 500px
+}
 
-    #carousel-wrapper {
-        position: relative;
-        width: 100%;
-        max-width: 800px;
-        margin: 0 auto;
-        height: 500px;
-    }
-    
-    .carousel-container {
-        width: 100%;
-        height: 100%;
-    }
-    
-    .main-nav-arrow {
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        font-size: 24px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-        z-index: 10;
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-    }
-    
-    .main-left-arrow {
-        left: 20px;
-    }
-    
-    .main-right-arrow {
-        right: 20px; 
-    }
-    
-    .main-nav-arrow:hover {
-        background-color: #45a049;
-    }
-    
-    .hidden {
-        display: none;
-    }
-    
-    @media (max-width: 768px) {
-        #carousel-wrapper {
-            max-width: 90%;
-            height: 400px;
-        }
-    
-        .main-nav-arrow {
-            width: 40px;
-            height: 40px;
-            font-size: 20px;
-        }
-    
-        .main-left-arrow {
-            left: 10px;
-        }
-    
-        .main-right-arrow {
-            right: 10px;
-        }
-    }
-    
-    @media (max-width: 480px) {
-        #carousel-wrapper {
-            max-width: 95%;
-            height: 300px;
-        }
-    
-        .main-nav-arrow {
-            width: 30px;
-            height: 30px;
-            font-size: 16px;
-        }
-    
-        .main-left-arrow {
-            left: 5px;
-        }
-    
-        .main-right-arrow {
-            right: 5px;
-        }
-    }
-    
-    </style>
-    
+#carousel-wrapper {
+    position: relative; 
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    height: 500px;
+}
+
+.carousel-container {
+   width: 100%;
+   height: 100%;
+}
+
+.main-left-arrow, .main-right-arrow {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 100; /* Increase the z-index to make sure buttons are on top */
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.main-left-arrow {
+    left: 10px; /* Adjusted to ensure it's visible */
+}
+
+.main-right-arrow {
+    right: 10px; /* Adjusted to ensure it's visible */
+}
+
+.hidden {
+    display: none;
+}
+
+
+</style>

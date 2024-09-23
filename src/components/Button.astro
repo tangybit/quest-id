@@ -1,5 +1,5 @@
 ---
-const { id, text, onClick, display = 'inline-block', disabled = false, className = '' } = Astro.props;
+const { id, text, onClick, display = 'inline-block', disabled = false, className = '', iconSrc } = Astro.props;
 ---
 
 <button
@@ -11,5 +11,32 @@ const { id, text, onClick, display = 'inline-block', disabled = false, className
     console.log('Button clicked:', id); 
     if (onClick) onClick();
   }}>
+  {iconSrc && <img src={iconSrc} alt={text} class="button-icon" />}
   {text}
 </button>
+
+<style>
+
+.btn {
+    width: 80px; /* Adjust size as needed */
+    height: 80px; /* Adjust size as needed */
+    background-color: #4CAF50; /* Circle color */
+    border-radius: 50%; /* Makes the button circular */
+    display: flex; /* Centers the icon */
+    align-items: center; /* Vertically centers the icon */
+    justify-content: center; /* Horizontally centers the icon */
+    border: none; /* Remove default border */
+    cursor: pointer; /* Change cursor to pointer */
+    transition: background-color 0.3s; /* Smooth hover effect */
+}
+
+.btn:hover {
+    background-color: #45a049; /* Darker shade on hover */
+}
+
+.button-icon {
+    width: 50%; /* Adjust icon size relative to the button */
+    height: auto; /* Maintain aspect ratio */
+}
+
+</style>

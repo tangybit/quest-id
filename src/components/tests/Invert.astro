@@ -2,9 +2,12 @@
 import { speciesData } from '../../utils/SpeciesData.js'; 
 import Slider from '../Slider.astro'; 
 
+
+
 const invertDataGroupedByIndex = speciesData.invert; 
+
 ---
 
 <div> 
-  <Slider dataGroupedByIndex={invertDataGroupedByIndex} sliderId="invert" />
+  <Slider dataGroupedByIndex={invertDataGroupedByIndex} sliderId='invert' />
 </div>

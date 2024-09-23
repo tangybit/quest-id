@@ -58,8 +58,6 @@ import Random100 from './tests/AllSpecies.astro';
   </div>
 </div>
 
-
-
     <div class="main-container">
     <div class="nav-wrapper left-nav">
       <div class="nav-container" id="left-nav-container">
@@ -73,21 +71,21 @@ import Random100 from './tests/AllSpecies.astro';
         <div id="fish" class="content-section">
           <Fish />
         </div>
-
+        
         <div id="invert" class="content-section">
           <Invert />
         </div>
-
+        
         <div id="limu" class="content-section">
           <Limu />
         </div>
 
         <div id="all" class="content-section">
-          <AllSpecies />
+        <!-- <AllSpecies /> -->
         </div>
 
         <div id="random-100" class="content-section">
-          <Random100 />
+          <!-- <Random100 /> -->
         </div>
 
         <div id="catalog" class="content-section">
@@ -117,74 +115,30 @@ import Random100 from './tests/AllSpecies.astro';
     <Nav navType="study" />
   </div>
 </div>
+</div>
+<!-- <div class="mobile-message">
+  This app is not optimized for mobile devices. Please use a computer to access the content.
+</div> -->
+
 
 <script>
-  let activeSectionId = 'fish';
-  let isMenuOpen = false;
-  
+
   function updateContentVisibility() {
     const hash = window.location.hash.replace('#', '') || 'fish';
-    activeSectionId = hash;
-  
+
     document.querySelectorAll('.content-section').forEach(section => {
       section.classList.add('hidden');
     });
-  
+
     const activeSection = document.getElementById(hash);
     if (activeSection) {
       activeSection.classList.remove('hidden');
     }
-  
-    updateNavActiveSection();
   }
-
-  function updateNavActiveSection() {
-    document.querySelectorAll('a[data-section]').forEach(link => {
-      if (link.getAttribute('data-section') === activeSectionId) {
-        link.classList.add('active');
-      } else {
-        link.classList.remove('active');
-      }
-    });
-  }
- 
-
-  function toggleMenu() {
-    const overlay = document.getElementById('menu-overlay');
-    
-    if (isMenuOpen) {
-      overlay.classList.remove('slide-in');
-      overlay.classList.add('slide-out');
-      setTimeout(() => {
-        overlay.style.display = 'none';
-      }, 500);
-    } else {
-      overlay.style.display = 'block';
-      setTimeout(() => {
-        overlay.classList.remove('slide-out');
-        overlay.classList.add('slide-in');
-      }, 10); 
-    }
-
-    isMenuOpen = !isMenuOpen;
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    updateContentVisibility();
-  
-    const menuIcon = document.querySelector('.icon');
-    const closeButton = document.getElementById('close-menu');
-    
-    if (menuIcon) {
-      menuIcon.addEventListener('click', toggleMenu);
-    }
-
-    if (closeButton) {
-      closeButton.addEventListener('click', toggleMenu);
-    }
-  });
 
   window.addEventListener('hashchange', updateContentVisibility);
+
+  document.addEventListener('DOMContentLoaded', updateContentVisibility);
 </script>
 
 
