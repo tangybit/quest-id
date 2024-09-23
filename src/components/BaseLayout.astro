@@ -81,11 +81,11 @@ import Random100 from './tests/AllSpecies.astro';
         </div>
 
         <div id="all" class="content-section">
-        <!-- <AllSpecies /> -->
+        <AllSpecies />
         </div>
 
         <div id="random-100" class="content-section">
-          <!-- <Random100 /> -->
+          <Random100 />
         </div>
 
         <div id="catalog" class="content-section">
@@ -139,6 +139,27 @@ import Random100 from './tests/AllSpecies.astro';
   window.addEventListener('hashchange', updateContentVisibility);
 
   document.addEventListener('DOMContentLoaded', updateContentVisibility);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Attach click event to all anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent the jump to the anchor
+        const targetId = this.getAttribute('href').substring(1); // Get the target ID
+        const targetElement = document.getElementById(targetId);
+
+        if (targetElement) {
+          // Hide all sections
+          document.querySelectorAll('.content-section').forEach(section => {
+            section.classList.add('hidden');
+          });
+
+          // Show the targeted section
+          targetElement.classList.remove('hidden');
+        }
+      });
+    });
+  });
 </script>
 
 

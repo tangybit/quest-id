@@ -9,17 +9,19 @@ html, body {
   padding: 0;
   overflow: hidden; 
   position: relative;
+  scroll-behavior: smooth;
 }
 
 #background-video {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   object-fit: cover;
   z-index: -1;
 }
+
 
 .header-container {
   width: 100%; 
@@ -56,8 +58,9 @@ html, body {
   box-sizing: border-box;
   flex-wrap: nowrap;
   min-width: 800px;
-}
-
+  transition: margin 0.3s ease;
+  }
+  
 .nav-wrapper {
   display: flex;
   flex-direction: column;
@@ -120,6 +123,10 @@ a:hover {
 
 .active {
   font-weight: bold;
+}
+
+a:focus {
+  outline: none;
 }
 
 .test-container {

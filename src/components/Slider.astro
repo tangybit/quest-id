@@ -188,14 +188,14 @@ const dataEntries = shuffle(Object.entries(dataGroupedByIndex));
             carousel2Skipped = true;
             console.log("Marked carousel - 2 as skipped. Showing skipped slides next.");
 
-        //     skippedSlidesMode = true; 
-        //     currentSkippedIndex = 0; 
-        //     showCarousel(skippedSlides[currentSkippedIndex]);
-        //     currentSkippedIndex++;
-        // } else {
-        //     currentSetIndex = Math.min(carousels.length - 1, currentSetIndex + 1);
-        //     console.log(`Advancing to the next slide: ${currentSetIndex}`);
-        //     showCarousel(currentSetIndex); 
+            skippedSlidesMode = true; 
+            currentSkippedIndex = 0; 
+            showCarousel(skippedSlides[currentSkippedIndex]);
+            currentSkippedIndex++;
+        } else {
+            currentSetIndex = Math.min(carousels.length - 1, currentSetIndex + 1);
+            console.log(`Advancing to the next slide: ${currentSetIndex}`);
+            showCarousel(currentSetIndex); 
         }
     }
 });
@@ -211,12 +211,8 @@ const dataEntries = shuffle(Object.entries(dataGroupedByIndex));
         });
     });
 </script>
-    
-    
-
 
 <style>
-    
  
 #carousel-wrapper {
     position: relative;
