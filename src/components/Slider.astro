@@ -189,9 +189,7 @@ const dataEntries = shuffle(Object.entries(dataGroupedByIndex));
             console.log("Marked carousel - 2 as skipped. Showing skipped slides next.");
 
             skippedSlidesMode = true; 
-            currentSkippedIndex = 0; 
-            showCarousel(skippedSlides[currentSkippedIndex]);
-            currentSkippedIndex++;
+            processSkippedSlides();
         } else {
             currentSetIndex = Math.min(carousels.length - 1, currentSetIndex + 1);
             console.log(`Advancing to the next slide: ${currentSetIndex}`);
@@ -247,18 +245,18 @@ const dataEntries = shuffle(Object.entries(dataGroupedByIndex));
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    z-index: 100; /* Increase the z-index to make sure buttons are on top */
+    z-index: 100; 
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
 }
 
 .main-left-arrow {
-    left: 10px; /* Adjusted to ensure it's visible */
+    left: 10px;
 }
 
 .main-right-arrow {
-    right: 10px; /* Adjusted to ensure it's visible */
+    right: 10px;
 }
 
 .hidden {

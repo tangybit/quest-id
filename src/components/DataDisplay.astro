@@ -64,6 +64,7 @@ const itemData = itemList ? itemList[0] : null;
 
             function handleSubmit() {
                 if (inputElement) {
+                    console.log("Check button clicked"); 
                     inputElement.classList.remove('input-error');
 
                     const userInput = inputElement.value.trim();

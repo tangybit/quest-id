@@ -120,9 +120,10 @@ const { sliderId } = Astro.props;
 
 .score-table {
     margin: 20px;
-    min-height: 800px;
     padding: 10px;
-    border: none; 
+    border: none;
+    height: 100%; 
+    overflow: visible; 
 }
 
 .percentage-display {
@@ -133,43 +134,40 @@ const { sliderId } = Astro.props;
 }
 
 .scrollable-container {
-    max-height: 800px; 
+    max-height: 400px; 
     max-width: 500px;
-    overflow-y: auto;
-    border: none; /* Remove any potential borders */
-    box-shadow: none; /* Remove any shadows */
+    overflow-y: auto; 
+    overflow-x: hidden;
+    box-shadow: none;
 }
 
-/* Ensure no borders on table and table rows */
 table {
     width: 100%;
     border-collapse: collapse;
-    border: none; 
-    box-shadow: none; /* Prevent any shadows on the table */
+    border: none;
+    box-shadow: none;
 }
 
 th, td {
     padding: 10px 40px; 
     text-align: center;
-    border: none; /* Ensure no borders on table cells */
+    border: none;
 }
 
-th {
-    color: #333; 
-    border: none; 
-}
-
-td {
+th, td {
+    padding: 10px 40px;
+    text-align: center;
     border: none;
 }
 
 tbody, tr {
     border: none;
-    box-shadow: none; /* Ensure no shadow or border on table rows */
+    box-shadow: none; 
 }
 
 .take-again-button {
-    margin-top: 40px;
+    margin-top: 20px;
+    margin-bottom: 10px;
     text-align: center;
 }
 
