@@ -26,32 +26,20 @@ const itemData = itemList ? itemList[0] : null;
         </div>
   
 <div class="button-container">
-  <!-- Check Button -->
   <Button 
     id={`check-button-${sliderId}-${slidePosition}`} 
     text="Check" 
     className="check-button" 
-    iconSrc="/check.png"
-    /* No onClick here */
+    iconSrc=""
   />
   
-  <!-- Skip Button -->
   <Button 
     id={`skip-button-${sliderId}-${slidePosition}`} 
     text="Skip" 
     className="skip-button" 
-    iconSrc="/skip.png"
-    /* No onClick here */
+    iconSrc=""
   />
   
-  <!-- Flag Button -->
-  <Button 
-    id={`flag-button-${sliderId}-${slidePosition}`} 
-    text="Flag" 
-    className="flag-button" 
-    iconSrc="/flag.png"
-    /* No onClick here */
-  />
 </div>
 </div>
 </div>
@@ -61,7 +49,7 @@ const itemData = itemList ? itemList[0] : null;
   
 
   <script>
-    import { checkAnswer, skipAnswer, getSkippedQuestions} from '../utils/checkAnswer.js';
+    import { checkAnswer, skipAnswer} from '../utils/checkAnswer.js';
 
     document.addEventListener('DOMContentLoaded', () => {
      
@@ -73,20 +61,6 @@ const itemData = itemList ? itemList[0] : null;
             const skipButton = document.getElementById(`skip-button-${sliderId}-${slidePosition}`);  // Skip button reference
             const inputElement = document.getElementById(`scientific-name-input-${sliderId}-${slidePosition}`);
             const resultIconElement = document.getElementById(`result-icon-${sliderId}-${slidePosition}`);
-
-            function reEnableForSkippedQuestions() {
-            const skippedQuestionsForSlider = getSkippedQuestions(sliderId);  // Use the function to get skipped questions
-                 if (skippedQuestionsForSlider.includes(slidePosition)) {
-                 if (inputElement) inputElement.disabled = false;
-                 if (checkButton) checkButton.disabled = false;
-                 if (skipButton) skipButton.disabled = false;
-                 if (resultIconElement) resultIconElement.textContent = '⏭️';  // Add the emoji indicating it's a skipped question
-                //  console.log(`Re-enabled input and buttons for skipped question: SliderId ${sliderId}, SlidePosition ${slidePosition}`);
-              }
-            }
-
-            // Run re-enable logic on load
-            reEnableForSkippedQuestions();
 
             function handleSubmit() {
                 if (inputElement) {
@@ -124,40 +98,29 @@ const itemData = itemList ? itemList[0] : null;
                 }
             }
 
-            // Handle skipping the question
             function handleSkip() {
-    // Retrieve the correct answer from the element, like in handleSubmit
-    const correctAnswer = element.querySelector('h2').textContent.trim(); 
+    const correctAnswer = element.querySelector('h2').textContent.trim();
 
-    // Log the correct answer for debugging
-    // console.log('Correct answer for skip:', correctAnswer);
-
-    // Call skipAnswer with the correct answer
+    // Mark as skipped, but don't reveal the answer
     skipAnswer(sliderId, slidePosition, correctAnswer);
-    resultIconElement.textContent = '⏭️'; 
+    resultIconElement.textContent = '⏭️';
 
-    // Display hidden info (like explanations or feedback) after skipping
     element.querySelectorAll('.hidden-info').forEach(info => {
-        info.classList.remove('hidden-info');
+        info.classList.add('hidden-info');
     });
 
-    // Remove the input label if it exists
     const labelElement = element.querySelector('.input-label');
     if (labelElement) {
         labelElement.remove();
     }
 
-    // Disable the input and buttons after skipping
-    inputElement.disabled = true;  
-    checkButton.disabled = true; 
-    skipButton.disabled = true; 
+    inputElement.disabled = false;
+    checkButton.disabled = false;
+    skipButton.style.display = 'none';
 
-    // Dispatch a custom event to indicate the question was skipped
     const event = new CustomEvent('skipped', { detail: { slidePosition, sliderId } });
     document.dispatchEvent(event);
 }
-
-
             if (checkButton) {
                 checkButton.addEventListener('click', handleSubmit);
             }

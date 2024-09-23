@@ -185,20 +185,6 @@ a:hover {
   padding-top: 10px; 
 }
 
-/* .check-button {
-  width: auto;
-  height: 35px;
-  padding: 3px 8px;
-  font-size: 1px;
-  line-height: 0;
-  cursor: pointer;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  box-sizing: border-box;
-} */
-
 .result-icon {
   margin-right: 10px; 
   font-size: 24px;
@@ -390,17 +376,6 @@ a:hover {
     font-size: 20px;
   }
 
-  .check-button {
-    width: auto;
-    height: 35px;
-    padding: 8px 8px;
-    font-size: 14px;
-    line-height: 1;
-    margin-top: 60px;
-    margin-bottom: 100px;
-    margin-right: 20px;
-  }
-
   .gallery-container {
     position: relative;
     width: 100%;
@@ -422,27 +397,9 @@ a:hover {
   }
 
   .test-container {
-    min-height: 650px;
+    min-height: 600px;
     max-width: 550px;
     margin-top: -200px;
     margin-bottom: 250px;
   }
-}
-
-.btn {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s;
-}
-
-.btn-green {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.btn-green:hover {
-  background-color: #45a049;
 }

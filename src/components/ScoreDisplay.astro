@@ -38,8 +38,7 @@ const { sliderId } = Astro.props;
 </div>
 
 <script>
-    import { getAnswers, getScore , getSkippedQuestions} from '../utils/checkAnswer.js';
-
+    import { getAnswers } from '../utils/checkAnswer.js';
 
     document.addEventListener('DOMContentLoaded', () => {
 
@@ -52,63 +51,70 @@ const { sliderId } = Astro.props;
                 return;
             }
 
+            // Event listener for answersUpdated
             document.addEventListener('answersUpdated', (event) => {
-
-
                 if (event.detail.sliderId === sliderId) {
                     updateScoreTable(scoreTable, sliderId);
                 }
             });
 
-            updateScoreTable(scoreTable, sliderId);
-        });
-        function updateScoreTable(scoreTable, sliderId) {
-    const answers = getAnswers(sliderId); // Get all answers (answered and skipped)
-    const tableBody = scoreTable.querySelector('#score-table-body');
-    tableBody.innerHTML = ''; 
+            // Function to update the score table
+            function updateScoreTable(scoreTable, sliderId) {
+                const answers = getAnswers(sliderId); // Get all answers (answered and skipped)
+                const tableBody = scoreTable.querySelector('#score-table-body');
+                tableBody.innerHTML = ''; 
 
-    let score = 0; // Initialize the score
-    let totalQuestions = answers.length; // Total number of questions
+                let score = 0; // Initialize the score
+                let totalQuestions = answers.length; // Total number of questions
 
-    answers.forEach((answer, index) => {
-        const row = document.createElement('tr');
+                // Iterate over answers to populate the table
+                answers.forEach((answer, index) => {
+                    const row = document.createElement('tr');
 
-        // If the question is not skipped and answered correctly, increment the score
-        if (answer.answered && answer.isCorrect) {
-            score++;
-        }
+                    // If the question is answered correctly, increment the score
+                    if (answer.answered && answer.isCorrect) {
+                        score++;
+                    }
 
-        // Leave userInput empty if the question is skipped
-        const userInputDisplay = answer.answered ? answer.userInput : '';
+                    // Leave userInput empty if the question is skipped
+                    const userInputDisplay = answer.answered ? answer.userInput : '';
 
-        // Populate the table row
-        row.innerHTML = `
-            <td>${index + 1}</td>
-            <td>${userInputDisplay}</td>
-            <td>${answer.correctAnswer || 'N/A'}</td>
-            <td>${answer.status === 'skipped' ? '⏭️' : (answer.isCorrect ? '✅' : '❌')}</td>
-        `;
-        tableBody.appendChild(row);
-    });
+                    // Only show the correct answer if the question was answered (not skipped)
+                    const correctAnswerDisplay = answer.answered ? (answer.correctAnswer || 'N/A') : 'N/A';
 
-    // Calculate the percentage score
-    const percentage = totalQuestions > 0 ? ((score / totalQuestions) * 100).toFixed(2) : 0;
+                    // Populate the table row
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${userInputDisplay}</td>
+                        <td>${correctAnswerDisplay}</td>
+                        <td>${answer.status === 'skipped' ? '⏭️' : (answer.isCorrect ? '✅' : '❌')}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
 
-    // Update the percentage display
-    const percentageDisplay = scoreTable.querySelector('#percentage-display');
-    percentageDisplay.textContent = `Percentage: ${percentage}%`;
-}
+                // Calculate the percentage score
+                const percentage = totalQuestions > 0 ? ((score / totalQuestions) * 100).toFixed(2) : 0;
 
+                // Update the percentage display
+                const percentageDisplay = scoreTable.querySelector('#percentage-display');
+                percentageDisplay.textContent = `Percentage: ${percentage}%`;
+            }
 
-
-        const takeAgainButtons = document.querySelectorAll('#take-again-btn');
-        takeAgainButtons.forEach((button) => {
-            button.addEventListener('click', () => {
-                window.location.reload();
+            // Handle take again buttons to reload the page
+            const takeAgainButtons = document.querySelectorAll('#take-again-btn');
+            takeAgainButtons.forEach((button) => {
+                button.addEventListener('click', () => {
+                    window.location.reload();
+                });
             });
+
+            // Initial update of the score table
+            updateScoreTable(scoreTable, sliderId);
         });
     });
 </script>
+
+    
 
 <style>
 
@@ -126,23 +132,26 @@ const { sliderId } = Astro.props;
     text-align: center;
 }
 
-
 .scrollable-container {
-    max-height: 450px; 
+    max-height: 800px; 
     max-width: 500px;
     overflow-y: auto;
+    border: none; /* Remove any potential borders */
+    box-shadow: none; /* Remove any shadows */
 }
 
-
+/* Ensure no borders on table and table rows */
 table {
     width: 100%;
     border-collapse: collapse;
     border: none; 
+    box-shadow: none; /* Prevent any shadows on the table */
 }
 
 th, td {
     padding: 10px 40px; 
     text-align: center;
+    border: none; /* Ensure no borders on table cells */
 }
 
 th {
@@ -150,13 +159,13 @@ th {
     border: none; 
 }
 
-
 td {
     border: none;
 }
 
 tbody, tr {
     border: none;
+    box-shadow: none; /* Ensure no shadow or border on table rows */
 }
 
 .take-again-button {

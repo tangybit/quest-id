@@ -17,8 +17,7 @@ const dataEntries = shuffle(Object.entries(dataGroupedByIndex));
 ---
 
 <div id="carousel-wrapper" data-slider-id={sliderId}>
- 
-     <!-- Left navigation button -->
+    
      <button class="btn main-left-arrow" aria-label="Previous set">
         <span class="button-icon">&lt;</span>
       </button>
@@ -56,6 +55,7 @@ const dataEntries = shuffle(Object.entries(dataGroupedByIndex));
 </div>
 
 <script>
+    import {getSkippedQuestions} from '../utils/checkAnswer.js';
 
     document.addEventListener('DOMContentLoaded', () => {
         const speciesSliders = document.querySelectorAll('#carousel-wrapper[data-slider-id]');
@@ -137,11 +137,12 @@ const dataEntries = shuffle(Object.entries(dataGroupedByIndex));
     
                     const isAnswered = carousels[currentSetIndex].getAttribute('data-answered') === 'true';
                     if (!isAnswered && !carousels[currentSetIndex].hasAttribute('data-final-slide')) {
-                        return; // Prevent advancing if the current question is not answered
+                        return; 
                     }
     
                     if (currentSetIndex === carousels.length - 2) {
                         console.log("On second-to-last slide (carousel - 2)");
+                        const skippedSlides = getSkippedQuestions(sliderId);  
     
                         if (skippedSlides.length > 0) {
                             if (!carousel2Skipped) {
@@ -171,24 +172,33 @@ const dataEntries = shuffle(Object.entries(dataGroupedByIndex));
             } else {
                 console.warn(`Right arrow not found for group ${sliderId}`);
             }
-    
             document.addEventListener('skipped', (event) => {
-                console.log("Skip button pressed");
-    
-                const carousel = carousels[currentSetIndex];
-                carousel.setAttribute('data-skipped', 'true');
-    
-                if (!skippedSlides.includes(currentSetIndex)) {
-                    skippedSlides.push(currentSetIndex); 
-                    console.log(`Skipped slides array updated:`, skippedSlides);
-                }
+    if (event.detail.sliderId === sliderId) { 
+        console.log("Skip button pressed");
 
-                if (currentSetIndex === carousels.length - 2) {
-                    carousel2Skipped = true;
-                    console.log("Marked carousel - 2 as skipped.");
-                }
-            });
-    
+        const carousel = carousels[currentSetIndex];
+        carousel.setAttribute('data-skipped', 'true');
+
+        if (!skippedSlides.includes(currentSetIndex)) {
+            skippedSlides.push(currentSetIndex);
+            console.log(`Skipped slides array updated:`, skippedSlides);
+        }
+
+        if (currentSetIndex === carousels.length - 2) {
+            carousel2Skipped = true;
+            console.log("Marked carousel - 2 as skipped. Showing skipped slides next.");
+
+        //     skippedSlidesMode = true; 
+        //     currentSkippedIndex = 0; 
+        //     showCarousel(skippedSlides[currentSkippedIndex]);
+        //     currentSkippedIndex++;
+        // } else {
+        //     currentSetIndex = Math.min(carousels.length - 1, currentSetIndex + 1);
+        //     console.log(`Advancing to the next slide: ${currentSetIndex}`);
+        //     showCarousel(currentSetIndex); 
+        }
+    }
+});
             document.addEventListener('answersUpdated', (event) => {
                 if (event.detail.sliderId === sliderId) {
                     const carousel = carousels[currentSetIndex];

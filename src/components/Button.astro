@@ -17,26 +17,32 @@ const { id, text, onClick, display = 'inline-block', disabled = false, className
 
 <style>
 
+.button-container {
+    display: flex;
+    justify-content: center; /* Center the buttons in the container */
+    margin-top: 20px; /* Add some space above the button container */
+}
+
 .btn {
-    width: 80px; /* Adjust size as needed */
-    height: 80px; /* Adjust size as needed */
-    background-color: #4CAF50; /* Circle color */
-    border-radius: 50%; /* Makes the button circular */
-    display: flex; /* Centers the icon */
-    align-items: center; /* Vertically centers the icon */
-    justify-content: center; /* Horizontally centers the icon */
-    border: none; /* Remove default border */
-    cursor: pointer; /* Change cursor to pointer */
-    transition: background-color 0.3s; /* Smooth hover effect */
+    width: 100px; 
+    height: 50px;
+    background-color: #4CAF50; 
+    border-radius: 25px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    border: none; 
+    cursor: pointer;
+    transition: background-color 0.3s; 
+    font-size: 14px; 
+    color: white; 
+    font-weight: bold; 
+    margin: 10px;
+    text-transform: uppercase;
 }
 
 .btn:hover {
     background-color: #45a049; /* Darker shade on hover */
-}
-
-.button-icon {
-    width: 50%; /* Adjust icon size relative to the button */
-    height: auto; /* Maintain aspect ratio */
 }
 
 </style>
