@@ -3,9 +3,22 @@ let scoresBySliderId = {};
 let flaggedQuestions = {};
 let skippedQuestions = {};
 
-export function checkAnswer(sliderId, userInput, correctAnswer, slideIndex) {
-    // console.log('Received correctAnswer:', correctAnswer, 'of type:', typeof correctAnswer);
+function highlightDifferences(userInput, correctAnswer) {
+    let highlightedText = '';
+    const length = Math.max(userInput.length, correctAnswer.length);
 
+    for (let i = 0; i < length; i++) {
+        if (userInput[i] !== correctAnswer[i]) {
+            highlightedText += `<span style="color: red;">${userInput[i] || ''}</span>`;
+        } else {
+            highlightedText += userInput[i] || '';
+        }
+    }
+
+    return highlightedText;
+}
+
+export function checkAnswer(sliderId, userInput, correctAnswer, slideIndex) {
     if (!answersBySliderId[sliderId]) {
         answersBySliderId[sliderId] = [];
     }
@@ -20,8 +33,10 @@ export function checkAnswer(sliderId, userInput, correctAnswer, slideIndex) {
         answersBySliderId[sliderId].length = slideIndex + 1;
     }
 
+    const highlightedInput = highlightDifferences(userInput.trim(), correctAnswerStr);
+
     answersBySliderId[sliderId][slideIndex] = {
-        userInput: userInput.trim(),
+        userInput: highlightedInput,
         correctAnswer: correctAnswerStr,
         isCorrect: isCorrect,
         answered: true,
@@ -29,11 +44,40 @@ export function checkAnswer(sliderId, userInput, correctAnswer, slideIndex) {
 
     scoresBySliderId[sliderId] = answersBySliderId[sliderId].filter(answer => answer && answer.isCorrect).length;
 
-    // Log the size of the array to monitor slide count
-    // console.log(`Number of slides for sliderId ${sliderId}:`, answersBySliderId[sliderId].length);
-    // console.log(`Processing answer for slideIndex: ${slideIndex}`);
     document.dispatchEvent(new CustomEvent('answersUpdated', { detail: { sliderId } }));
 }
+
+
+// export function checkAnswer(sliderId, userInput, correctAnswer, slideIndex) {
+//     console.log('Received correctAnswer:', correctAnswer, 'of type:', typeof correctAnswer);
+
+//     if (!answersBySliderId[sliderId]) {
+//         answersBySliderId[sliderId] = [];
+//     }
+//     if (!scoresBySliderId[sliderId]) {
+//         scoresBySliderId[sliderId] = 0;
+//     }
+
+//     const correctAnswerStr = String(correctAnswer).trim();
+//     const isCorrect = userInput.trim() === correctAnswerStr;
+
+//     if (slideIndex >= answersBySliderId[sliderId].length) {
+//         answersBySliderId[sliderId].length = slideIndex + 1;
+//     }
+
+//     answersBySliderId[sliderId][slideIndex] = {
+//         userInput: userInput.trim(),
+//         correctAnswer: correctAnswerStr,
+//         isCorrect: isCorrect,
+//         answered: true,
+//     };
+
+//     scoresBySliderId[sliderId] = answersBySliderId[sliderId].filter(answer => answer && answer.isCorrect).length;
+
+//     console.log(`Number of slides for sliderId ${sliderId}:`, answersBySliderId[sliderId].length);
+//     console.log(`Processing answer for slideIndex: ${slideIndex}`);
+//     document.dispatchEvent(new CustomEvent('answersUpdated', { detail: { sliderId } }));
+// }
 
 
 export function skipAnswer(sliderId, slideIndex, correctAnswer = null) {
@@ -87,27 +131,6 @@ export function skipAnswer(sliderId, slideIndex, correctAnswer = null) {
 }
 
 
-
-export function flagAnswer(sliderId, slideIndex) {
-    if (!flaggedQuestions[sliderId]) {
-        flaggedQuestions[sliderId] = [];
-    }
-    if (!answersBySliderId[sliderId]) {
-        answersBySliderId[sliderId] = [];
-    }
-
-    // Mark the question as "flagged"
-    flaggedQuestions[sliderId].push(slideIndex);
-    answersBySliderId[sliderId][slideIndex] = {
-        userInput: null,
-        correctAnswer: null,
-        answered: false,
-        status: "flagged" // Answer is flagged
-    };
-
-    // console.log(`Question flagged: SliderId ${sliderId}, SlideIndex ${slideIndex}`);
-}
-
 export function getScore(sliderId) {
     return scoresBySliderId[sliderId] || 0;
 }
@@ -116,10 +139,12 @@ export function getAnswers(sliderId) {
     return answersBySliderId[sliderId] ? answersBySliderId[sliderId].filter(answer => answer !== undefined) : [];
 }
 
-export function getFlaggedQuestions(sliderId) {
-    return flaggedQuestions[sliderId] || [];
-}
-
 export function getSkippedQuestions(sliderId) {
     return skippedQuestions[sliderId] || [];
+}
+
+export function getHighlightedInput(sliderId, slideIndex) {
+    return answersBySliderId[sliderId] && answersBySliderId[sliderId][slideIndex]
+        ? answersBySliderId[sliderId][slideIndex].userInput
+        : '';
 }

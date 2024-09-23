@@ -37,7 +37,7 @@ html, body {
 .logo-container {
   max-width: 150px;
   padding-left: 10px; 
-  margin-top: 45px;
+  margin-top: 20px;
   margin-bottom: 20px;
   margin-left: 120px;
 }
@@ -45,6 +45,7 @@ html, body {
 .logo {
   width: 100%;
   height: auto;
+  margin: 25px;
 
 }
 
@@ -137,7 +138,7 @@ a:focus {
   box-sizing: border-box;
   position: relative;
   min-height:900px;
-  margin: 20px auto; 
+  margin: 20px -uto; 
 }
 
 .data-info {
@@ -405,7 +406,7 @@ a:focus {
   .test-container {
     min-height: 600px;
     max-width: 550px;
-    margin-top: -200px;
+    margin-top: -250px;
     margin-bottom: 250px;
   }
 }

@@ -39,6 +39,7 @@ const itemData = itemList ? itemList[0] : null;
     className="skip-button" 
     iconSrc=""
   />
+  <div id={`highlighted-input-${sliderId}-${slidePosition}`} class="highlighted-input"></div> 
   
 </div>
 </div>
@@ -49,7 +50,7 @@ const itemData = itemList ? itemList[0] : null;
   
 
   <script>
-    import { checkAnswer, skipAnswer} from '../utils/checkAnswer.js';
+    import { checkAnswer, skipAnswer, getHighlightedInput} from '../utils/checkAnswer.js';
 
     document.addEventListener('DOMContentLoaded', () => {
      
@@ -58,9 +59,10 @@ const itemData = itemList ? itemList[0] : null;
             const sliderId = element.getAttribute('data-slider-id');
             const slidePosition = parseInt(element.getAttribute('data-slide-position') ?? '0', 10);
             const checkButton = document.getElementById(`check-button-${sliderId}-${slidePosition}`);
-            const skipButton = document.getElementById(`skip-button-${sliderId}-${slidePosition}`);  // Skip button reference
+            const skipButton = document.getElementById(`skip-button-${sliderId}-${slidePosition}`); 
             const inputElement = document.getElementById(`scientific-name-input-${sliderId}-${slidePosition}`);
             const resultIconElement = document.getElementById(`result-icon-${sliderId}-${slidePosition}`);
+            const highlightedInputElement = document.getElementById(`highlighted-input-${sliderId}-${slidePosition}`);
 
             function handleSubmit() {
                 if (inputElement) {
@@ -89,6 +91,14 @@ const itemData = itemList ? itemList[0] : null;
                     }
 
                     checkAnswer(sliderId, userInput, correctAnswer, slidePosition);
+
+                    const highlightedInput = getHighlightedInput(sliderId, slidePosition);
+                    console.log(highlightedInput)
+                    if (highlightedInput) {
+                    highlightedInputElement.innerHTML = highlightedInput;
+                     } else {
+                    highlightedInputElement.innerHTML = userInput;
+                    }
 
                     const event = new CustomEvent('answersUpdated', { detail: { slidePosition, sliderId } });
                     document.dispatchEvent(event);
