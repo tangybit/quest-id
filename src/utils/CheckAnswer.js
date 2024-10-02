@@ -1,22 +1,40 @@
 let answersBySliderId = {};
 let scoresBySliderId = {};
-let flaggedQuestions = {};
 let skippedQuestions = {};
 
 function highlightDifferences(userInput, correctAnswer) {
     let highlightedText = '';
     const length = Math.max(userInput.length, correctAnswer.length);
+    let allIncorrect = true; // Track if the whole input is wrong
 
     for (let i = 0; i < length; i++) {
-        if (userInput[i] !== correctAnswer[i]) {
-            highlightedText += `<span style="color: red;">${userInput[i] || ''}</span>`;
-        } else {
-            highlightedText += userInput[i] || '';
+        // Case 1: Correct answer has extra characters (missing in user input)
+        if (!userInput[i]) {
+            highlightedText += `<span style="color: red;">${correctAnswer[i]}</span>`;
         }
+        // Case 2: User input has extra characters (input longer than correct answer)
+        else if (!correctAnswer[i]) {
+            highlightedText += `<span style="color: red;">${userInput[i]}</span>`;
+        }
+        // Case 3: Characters don't match
+        else if (userInput[i] !== correctAnswer[i]) {
+            highlightedText += `<span style="color: red;">${userInput[i]}</span>`;
+        }
+        // Case 4: Characters match
+        else {
+            allIncorrect = false; // If any characters match, set this flag to false
+            highlightedText += userInput[i];
+        }
+    }
+
+
+    if (allIncorrect) {
+        highlightedText = `<span style="color: red;">${userInput}</span>`;
     }
 
     return highlightedText;
 }
+
 
 export function checkAnswer(sliderId, userInput, correctAnswer, slideIndex) {
     if (!answersBySliderId[sliderId]) {

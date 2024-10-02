@@ -5,7 +5,7 @@ import Button from './Button.astro';
 const { index, slidePosition, dataGroupedByIndex, sliderId } = Astro.props;
 const itemList = dataGroupedByIndex[index];
 const itemData = itemList ? itemList[0] : null;
-
+const totalSlides = dataGroupedByIndex.length;
 ---
 
 {itemData ? (
@@ -39,7 +39,7 @@ const itemData = itemList ? itemList[0] : null;
     className="skip-button" 
     iconSrc=""
   />
-  <div id={`highlighted-input-${sliderId}-${slidePosition}`} class="highlighted-input"></div> 
+  {/* <div id={`highlighted-input-${sliderId}-${slidePosition}`} class="highlighted-input"></div>  */}
   
 </div>
 </div>
@@ -65,49 +65,55 @@ const itemData = itemList ? itemList[0] : null;
             const highlightedInputElement = document.getElementById(`highlighted-input-${sliderId}-${slidePosition}`);
 
             function handleSubmit() {
-                if (inputElement) {
-                    console.log("Check button clicked"); 
-                    inputElement.classList.remove('input-error');
+    if (inputElement) {
+        console.log("Check button clicked");
+        inputElement.classList.remove('input-error');
 
-                    const userInput = inputElement.value.trim();
+        const userInput = inputElement.value.trim();
 
-                    if (userInput === '') {
-                        void inputElement.offsetWidth;
-                        inputElement.classList.add('input-error');
-                        return;
-                    }
+        if (userInput === '') {
+            void inputElement.offsetWidth;
+            inputElement.classList.add('input-error');
+            return;
+        }
 
-                    const correctAnswer = element.querySelector('h2').textContent;
-                    const isCorrect = userInput.trim() === correctAnswer.trim();
-                    resultIconElement.textContent = isCorrect ? '✅' : '❌';
+        const correctAnswer = element.querySelector('h2').textContent;
+        const isCorrect = userInput.trim() === correctAnswer.trim();
+        resultIconElement.textContent = isCorrect ? '✅' : '❌';
 
-                    element.querySelectorAll('.hidden-info').forEach(info => {
-                        info.classList.remove('hidden-info');
-                    });
+        // Lock the input and disable buttons regardless of highlightedInputElement
+        inputElement.disabled = true;
+        checkButton.disabled = true;
+        skipButton.disabled = true;
 
-                    const labelElement = element.querySelector('.input-label');
-                    if (labelElement) {
-                        labelElement.remove();
-                    }
+        // Make sure hidden info is revealed after submission
+        element.querySelectorAll('.hidden-info').forEach(info => {
+            info.classList.remove('hidden-info');
+        });
 
-                    checkAnswer(sliderId, userInput, correctAnswer, slidePosition);
+        // Remove label if it exists
+        const labelElement = element.querySelector('.input-label');
+        if (labelElement) {
+            labelElement.remove();
+        }
 
-                    const highlightedInput = getHighlightedInput(sliderId, slidePosition);
-                    console.log(highlightedInput)
-                    if (highlightedInput) {
-                    highlightedInputElement.innerHTML = highlightedInput;
-                     } else {
-                    highlightedInputElement.innerHTML = userInput;
-                    }
+        // Call checkAnswer and handle logic
+        checkAnswer(sliderId, userInput, correctAnswer, slidePosition);
 
-                    const event = new CustomEvent('answersUpdated', { detail: { slidePosition, sliderId } });
-                    document.dispatchEvent(event);
+        // This section is now optional, the input and buttons will be locked independently
+        const highlightedInput = getHighlightedInput(sliderId, slidePosition);
+        if (highlightedInput) {
+            highlightedInputElement.innerHTML = highlightedInput;
+        } else {
+            highlightedInputElement.innerHTML = userInput;
+        }
 
-                    inputElement.disabled = true;
-                    checkButton.disabled = true;
-                    skipButton.disabled = true;
-                }
-            }
+        // Dispatch event for answer updates
+        const event = new CustomEvent('answersUpdated', { detail: { slidePosition, sliderId } });
+        document.dispatchEvent(event);
+    }
+}
+
 
             function handleSkip() {
     const correctAnswer = element.querySelector('h2').textContent.trim();
